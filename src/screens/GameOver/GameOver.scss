@@ -1,0 +1,122 @@
+.gameover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 4px 8px;
+  animation: rise-in 0.4s ease-out;
+
+  &__medal {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    color: var(--text-faint);
+    margin-bottom: 18px;
+
+    &.is-record {
+      background: linear-gradient(180deg, rgba(245, 158, 11, 0.25), rgba(245, 158, 11, 0.08));
+      color: var(--warning);
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.35);
+      animation: badge-pop 0.5s ease-out;
+    }
+  }
+
+  &__trophy {
+    width: 40px;
+    height: 40px;
+  }
+
+  &__ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--warning);
+    animation: ring-pulse 1.6s ease-out infinite;
+  }
+
+  &__record {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--warning);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+
+    svg {
+      width: 1.1em;
+      height: 1.1em;
+    }
+  }
+
+  &__eyebrow {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+  }
+
+  &__score {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    margin-top: 10px;
+    background: linear-gradient(180deg, var(--text), var(--text-muted));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: pop-in 0.5s ease-out 0.1s backwards;
+  }
+
+  &__score-label {
+    font-size: 0.85rem;
+    color: var(--text-faint);
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+  }
+
+  &__stats {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    margin: 26px 0;
+  }
+
+  &__stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+  &__stat-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__stat-label {
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+}
