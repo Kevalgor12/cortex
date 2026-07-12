@@ -209,3 +209,14 @@ export function CheckIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function ZipIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <path d="M5 5h6v6H5zM5 19v-4a2 2 0 0 1 2-2h8a2 2 0 0 0 2-2V5" />
+      <circle cx="6.5" cy="6.5" r="1.4" fill="currentColor" stroke="none" />
+      <circle cx="18" cy="18.5" r="1.6" fill="currentColor" stroke="none" />
+      <path d="M5 19h8" />
+    </svg>
+  );
+}

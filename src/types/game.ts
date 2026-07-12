@@ -7,7 +7,8 @@ export type GameId =
   | 'quick-math'
   | 'visual-memory'
   | 'logic'
-  | 'odd-one-out';
+  | 'odd-one-out'
+  | 'zip';
 
 export interface GameMeta {
   id: GameId;

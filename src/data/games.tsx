@@ -1,10 +1,11 @@
 import type { GameMeta } from '../types/game';
-import { LogicIcon, MathIcon, MemoryIcon, OddOneOutIcon, PatternIcon } from '../components/icons';
+import { LogicIcon, MathIcon, MemoryIcon, OddOneOutIcon, PatternIcon, ZipIcon } from '../components/icons';
 import PatternRecognitionGame from '../games/pattern-recognition/PatternRecognitionGame';
 import QuickMathGame from '../games/quick-math/QuickMathGame';
 import VisualMemoryGame from '../games/visual-memory/VisualMemoryGame';
 import LogicChallengeGame from '../games/logic/LogicChallengeGame';
 import OddOneOutGame from '../games/odd-one-out/OddOneOutGame';
+import ZipGame from '../games/zip/ZipGame';
 
 // The full roster. Games without `available: true` are shown as "coming soon"
 // on the home screen and get wired up in later phases.
@@ -88,5 +89,21 @@ export const GAMES: GameMeta[] = [
     ],
     available: true,
     component: OddOneOutGame,
+  },
+  {
+    id: 'zip',
+    name: 'Zip',
+    tagline: 'Draw one path through every cell',
+    description: 'Connect the numbers in order with a single line that fills every square of the grid.',
+    skill: 'Planning',
+    accent: '#f97316',
+    icon: ZipIcon,
+    howTo: [
+      'Start at 1 and draw a path to 2, 3, and so on in order.',
+      'Your line must pass through every cell exactly once.',
+      'Drag across the grid — trace back over the line to erase.',
+    ],
+    available: true,
+    component: ZipGame,
   },
 ];
