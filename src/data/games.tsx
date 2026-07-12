@@ -4,6 +4,7 @@ import PatternRecognitionGame from '../games/pattern-recognition/PatternRecognit
 import QuickMathGame from '../games/quick-math/QuickMathGame';
 import VisualMemoryGame from '../games/visual-memory/VisualMemoryGame';
 import LogicChallengeGame from '../games/logic/LogicChallengeGame';
+import OddOneOutGame from '../games/odd-one-out/OddOneOutGame';
 
 // The full roster. Games without `available: true` are shown as "coming soon"
 // on the home screen and get wired up in later phases.
@@ -76,11 +77,16 @@ export const GAMES: GameMeta[] = [
     id: 'odd-one-out',
     name: 'Odd One Out',
     tagline: 'Find the tile that breaks the set',
-    description: 'One item does not belong. Spot it before time runs out.',
+    description: 'Every tile shares one colour — except one. Spot the odd shade before time runs out.',
     skill: 'Focus',
     accent: '#f472b6',
     icon: OddOneOutIcon,
-    howTo: [],
-    available: false,
+    howTo: [
+      'All tiles look the same colour — but one is slightly off.',
+      'Tap the odd tile as fast as you can.',
+      'Each level adds more tiles and a subtler difference.',
+    ],
+    available: true,
+    component: OddOneOutGame,
   },
 ];

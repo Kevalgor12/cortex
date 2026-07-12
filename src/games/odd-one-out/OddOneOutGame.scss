@@ -1,0 +1,69 @@
+.odd {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &--wrong {
+    animation: shake 0.4s ease;
+  }
+
+  &--wrong::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    animation: flash-danger 0.5s ease-out;
+  }
+
+  &__prompt {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  &__grid {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+    max-width: 380px;
+  }
+
+  &__tile {
+    aspect-ratio: 1;
+    border: none;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+    transition:
+      transform 0.12s ease,
+      box-shadow 0.18s ease,
+      opacity 0.18s ease;
+
+    &:not(:disabled):hover {
+      transform: scale(1.06);
+      z-index: 1;
+    }
+    &:not(:disabled):active {
+      transform: scale(0.96);
+    }
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--accent, var(--primary));
+    }
+
+    // Reveal: the odd tile is confirmed, the wrong pick is flagged.
+    &.is-correct {
+      box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--success);
+      transform: scale(1.08);
+      z-index: 1;
+      animation: pop-in 0.3s ease-out;
+    }
+    &.is-wrong {
+      box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--danger);
+    }
+    &.is-dim {
+      opacity: 0.35;
+    }
+  }
+}
