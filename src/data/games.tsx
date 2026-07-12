@@ -3,6 +3,7 @@ import { LogicIcon, MathIcon, MemoryIcon, OddOneOutIcon, PatternIcon } from '../
 import PatternRecognitionGame from '../games/pattern-recognition/PatternRecognitionGame';
 import QuickMathGame from '../games/quick-math/QuickMathGame';
 import VisualMemoryGame from '../games/visual-memory/VisualMemoryGame';
+import LogicChallengeGame from '../games/logic/LogicChallengeGame';
 
 // The full roster. Games without `available: true` are shown as "coming soon"
 // on the home screen and get wired up in later phases.
@@ -59,12 +60,17 @@ export const GAMES: GameMeta[] = [
     id: 'logic',
     name: 'Logic Challenge',
     tagline: 'Deduce the answer step by step',
-    description: 'Work through compact logic puzzles under pressure.',
+    description: 'Each series follows a hidden rule. Work it out and pick the number that comes next.',
     skill: 'Logic',
     accent: '#f59e0b',
     icon: LogicIcon,
-    howTo: [],
-    available: false,
+    howTo: [
+      'Study how the numbers change across the series.',
+      'Figure out the rule connecting them.',
+      'Pick the number that comes next before time runs out.',
+    ],
+    available: true,
+    component: LogicChallengeGame,
   },
   {
     id: 'odd-one-out',
