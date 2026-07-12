@@ -191,3 +191,21 @@ export function StarIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function CalendarIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <rect x="4" y="5.5" width="16" height="15" rx="2.5" />
+      <path d="M4 10h16M8 3.5v4M16 3.5v4" />
+      <path d="M8.5 14.5 11 17l4.5-5" />
+    </svg>
+  );
+}
+
+export function CheckIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <path d="M5 12.5 10 17.5 19 6.5" />
+    </svg>
+  );
+}

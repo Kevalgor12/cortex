@@ -1,14 +1,19 @@
 import type { GameId, GameMeta } from '../../types/game';
-import { BrainIcon, ChartIcon, LockIcon } from '../../components/icons';
+import { isDoneToday, readDaily } from '../../lib/daily';
+import { BrainIcon, CalendarIcon, ChartIcon, CheckIcon, FlameIcon, LockIcon } from '../../components/icons';
 import './Home.scss';
 
 interface HomeProps {
   games: GameMeta[];
   onSelect: (id: GameId) => void;
   onOpenStats: () => void;
+  onOpenDaily: () => void;
 }
 
-export default function Home({ games, onSelect, onOpenStats }: HomeProps) {
+export default function Home({ games, onSelect, onOpenStats, onOpenDaily }: HomeProps) {
+  const daily = readDaily();
+  const dailyDone = isDoneToday(daily);
+
   return (
     <div className="home container">
       <header className="home__top">
@@ -30,6 +35,29 @@ export default function Home({ games, onSelect, onOpenStats }: HomeProps) {
           Fast, focused challenges for reasoning, memory and speed. Beat your best, build a streak.
         </p>
       </div>
+
+      <button className={`daily-card${dailyDone ? ' is-done' : ''}`} onClick={onOpenDaily}>
+        <span className="daily-card__icon">
+          <CalendarIcon />
+        </span>
+        <span className="daily-card__text">
+          <span className="daily-card__title">Daily Challenge</span>
+          <span className="daily-card__sub">
+            {dailyDone ? 'Completed today — see your result' : 'Four puzzles. One shot. Same for everyone.'}
+          </span>
+        </span>
+        {daily.streak > 0 && (
+          <span className="daily-card__streak">
+            <FlameIcon />
+            {daily.streak}
+          </span>
+        )}
+        {dailyDone && (
+          <span className="daily-card__done">
+            <CheckIcon />
+          </span>
+        )}
+      </button>
 
       <section className="home__grid" aria-label="Games">
         {games.map((game) => (
