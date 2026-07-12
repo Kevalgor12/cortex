@@ -1,0 +1,106 @@
+.math {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &--wrong {
+    animation: shake 0.4s ease;
+  }
+
+  &--wrong::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    animation: flash-danger 0.5s ease-out;
+  }
+
+  // ---- Equation ----
+  &__equation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 40px;
+    font-variant-numeric: tabular-nums;
+    animation: pop-in 0.3s ease-out;
+  }
+
+  &__num {
+    font-size: clamp(2.6rem, 12vw, 3.6rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  &__op {
+    font-size: clamp(1.8rem, 8vw, 2.4rem);
+    font-weight: 700;
+    color: var(--accent, var(--primary));
+  }
+
+  &__q {
+    font-size: clamp(2.6rem, 12vw, 3.6rem);
+    font-weight: 800;
+    color: var(--text-faint);
+  }
+
+  // ---- Options ----
+  &__options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  &__option {
+    display: grid;
+    place-items: center;
+    padding: 22px 12px;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 1.7rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    transition:
+      transform 0.14s ease,
+      border-color 0.16s ease,
+      background 0.16s ease,
+      box-shadow 0.16s ease;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-3px);
+      border-color: var(--accent, var(--primary));
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0) scale(0.97);
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: var(--accent, var(--primary));
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, var(--primary)) 35%, transparent);
+    }
+
+    &.is-correct {
+      border-color: var(--success);
+      background: var(--success-soft);
+      color: var(--text);
+      animation: success-pulse 0.6s ease-out;
+    }
+
+    &.is-wrong {
+      border-color: var(--danger);
+      background: var(--danger-soft);
+    }
+
+    &.is-dim {
+      opacity: 0.4;
+    }
+  }
+}

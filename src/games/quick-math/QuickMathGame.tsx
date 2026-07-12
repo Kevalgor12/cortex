@@ -2,23 +2,23 @@ import type { GameProps } from '../../types/game';
 import type { DifficultyConfig } from '../../engine/difficulty';
 import { useChallengeGame } from '../../engine/useChallengeGame';
 import GameFrame from '../../components/GameFrame/GameFrame';
-import PatternCell from './PatternCell';
-import { createPatternChallenge, type PatternChallenge } from './patterns';
-import './PatternRecognitionGame.scss';
+import { createMathChallenge, type MathChallenge } from './math';
+import './QuickMathGame.scss';
 
+// Mental arithmetic is quick, so the clock is tighter and levels come faster.
 const DIFFICULTY: DifficultyConfig = {
-  roundsPerLevel: 3,
-  maxLevel: 6,
-  baseTimeMs: 6500,
-  minTimeMs: 3500,
-  timeStepMs: 400,
+  roundsPerLevel: 4,
+  maxLevel: 8,
+  baseTimeMs: 5500,
+  minTimeMs: 2600,
+  timeStepMs: 350,
 };
 
-export default function PatternRecognitionGame({ meta, onExit }: GameProps) {
-  const game = useChallengeGame<PatternChallenge, number>({
+export default function QuickMathGame({ meta, onExit }: GameProps) {
+  const game = useChallengeGame<MathChallenge, number>({
     gameId: meta.id,
     difficulty: DIFFICULTY,
-    generate: createPatternChallenge,
+    generate: createMathChallenge,
   });
 
   const { challenge, phase, selection } = game;
@@ -46,20 +46,17 @@ export default function PatternRecognitionGame({ meta, onExit }: GameProps) {
       onExit={onExit}
     >
       {challenge && (
-        <div className={`pattern${result ? ` pattern--${result}` : ''}`}>
-          <div className="pattern__sequence">
-            {challenge.sequence.map((cell, i) => (
-              <div className="pattern__cell" key={i}>
-                <PatternCell cell={cell} />
-              </div>
-            ))}
-            <div className="pattern__cell pattern__cell--mystery">?</div>
+        <div className={`math${result ? ` math--${result}` : ''}`}>
+          <div className="math__equation">
+            <span className="math__num">{challenge.left}</span>
+            <span className="math__op">{challenge.symbol}</span>
+            <span className="math__num">{challenge.right}</span>
+            <span className="math__op">=</span>
+            <span className="math__q">?</span>
           </div>
 
-          <p className="pattern__prompt">Which comes next?</p>
-
-          <div className="pattern__options">
-            {challenge.options.map((cell, i) => {
+          <div className="math__options">
+            {challenge.options.map((value, i) => {
               const stateClass =
                 phase === 'reveal'
                   ? i === challenge.answerIndex
@@ -71,12 +68,11 @@ export default function PatternRecognitionGame({ meta, onExit }: GameProps) {
               return (
                 <button
                   key={i}
-                  className={`pattern__option ${stateClass}`.trim()}
+                  className={`math__option ${stateClass}`.trim()}
                   onClick={() => game.answer(i, i === challenge.answerIndex)}
                   disabled={phase === 'reveal'}
-                  aria-label={`Option ${i + 1}`}
                 >
-                  <PatternCell cell={cell} />
+                  {value}
                 </button>
               );
             })}

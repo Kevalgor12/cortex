@@ -10,13 +10,23 @@
     width: 100%;
     transform-origin: left center;
     border-radius: inherit;
-    background: linear-gradient(90deg, var(--primary), var(--primary-bright));
-    // Only smooth the shrink; the per-frame rAF updates stay crisp.
-    transition: background 0.3s ease;
+    // Only the colour eases; the per-frame rAF scale stays crisp.
+    transition: background 0.4s ease;
     will-change: transform;
   }
 
-  &__fill--urgent {
+  // Calm — themed to the active game's accent.
+  &__fill--calm {
+    background: linear-gradient(90deg, var(--accent, var(--primary)), var(--primary-bright));
+  }
+
+  // Warning — half the clock gone.
+  &__fill--warn {
+    background: linear-gradient(90deg, var(--warning), #fbbf24);
+  }
+
+  // Danger — nearly out of time.
+  &__fill--danger {
     background: linear-gradient(90deg, var(--danger), #fb7185);
     animation: timer-flash 0.7s ease-in-out infinite;
   }
@@ -24,5 +34,5 @@
 
 @keyframes timer-flash {
   0%, 100% { opacity: 1; }
-  50%      { opacity: 0.55; }
+  50%      { opacity: 0.5; }
 }

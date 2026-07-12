@@ -1,6 +1,7 @@
 import type { GameMeta } from '../types/game';
 import { LogicIcon, MathIcon, MemoryIcon, OddOneOutIcon, PatternIcon } from '../components/icons';
 import PatternRecognitionGame from '../games/pattern-recognition/PatternRecognitionGame';
+import QuickMathGame from '../games/quick-math/QuickMathGame';
 
 // The full roster. Games without `available: true` are shown as "coming soon"
 // on the home screen and get wired up in later phases.
@@ -25,12 +26,17 @@ export const GAMES: GameMeta[] = [
     id: 'quick-math',
     name: 'Quick Math',
     tagline: 'Mental arithmetic against the clock',
-    description: 'Solve rapid-fire equations before the timer runs out.',
+    description: 'Solve rapid-fire equations before the timer runs out. The maths gets harder as you go.',
     skill: 'Speed',
     accent: '#22c55e',
     icon: MathIcon,
-    howTo: [],
-    available: false,
+    howTo: [
+      'Solve the equation shown on screen.',
+      'Tap the correct answer from the four options.',
+      'Speed and streaks multiply your score.',
+    ],
+    available: true,
+    component: QuickMathGame,
   },
   {
     id: 'visual-memory',

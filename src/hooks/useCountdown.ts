@@ -16,6 +16,9 @@ export interface Countdown {
  * A restartable countdown driven by requestAnimationFrame. Each round calls
  * `start(duration)`; `onExpire` fires once when it reaches zero. Using rAF
  * (instead of setInterval) keeps the timer bar buttery and self-correcting.
+ *
+ * The clock pauses while the tab is hidden and resumes on return, so a player
+ * who switches away mid-round isn't unfairly timed out.
  */
 export function useCountdown(onExpire: () => void): Countdown {
   const [remaining, setRemaining] = useState(0);
@@ -25,26 +28,24 @@ export function useCountdown(onExpire: () => void): Countdown {
   const rafRef = useRef<number | null>(null);
   const endRef = useRef(0);
   const durationRef = useRef(0);
+  const runningRef = useRef(false);
+  const pausedRemainingRef = useRef(0);
   const onExpireRef = useRef(onExpire);
   onExpireRef.current = onExpire;
 
-  const cancel = () => {
+  const cancelFrame = () => {
     if (rafRef.current !== null) {
       cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     }
   };
 
-  const stop = useCallback(() => {
-    cancel();
-    setIsRunning(false);
-  }, []);
-
   const tick = useCallback(() => {
     const left = Math.max(0, endRef.current - performance.now());
     setRemaining(left);
     if (left <= 0) {
-      cancel();
+      cancelFrame();
+      runningRef.current = false;
       setIsRunning(false);
       onExpireRef.current();
       return;
@@ -52,11 +53,18 @@ export function useCountdown(onExpire: () => void): Countdown {
     rafRef.current = requestAnimationFrame(tick);
   }, []);
 
+  const stop = useCallback(() => {
+    cancelFrame();
+    runningRef.current = false;
+    setIsRunning(false);
+  }, []);
+
   const start = useCallback(
     (durationMs: number) => {
-      cancel();
+      cancelFrame();
       durationRef.current = durationMs;
       endRef.current = performance.now() + durationMs;
+      runningRef.current = true;
       setDuration(durationMs);
       setRemaining(durationMs);
       setIsRunning(true);
@@ -71,7 +79,23 @@ export function useCountdown(onExpire: () => void): Countdown {
     return left / durationRef.current;
   }, []);
 
-  useEffect(() => cancel, []);
+  // Freeze the clock while the tab is hidden; pick up where it left off.
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (!runningRef.current) return;
+      if (document.hidden) {
+        cancelFrame();
+        pausedRemainingRef.current = Math.max(0, endRef.current - performance.now());
+      } else if (rafRef.current === null) {
+        endRef.current = performance.now() + pausedRemainingRef.current;
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, [tick]);
+
+  useEffect(() => cancelFrame, []);
 
   const progress = duration > 0 ? remaining / duration : 0;
   return { remaining, progress, isRunning, start, stop, getProgress };
