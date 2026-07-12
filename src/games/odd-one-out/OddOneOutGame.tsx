@@ -39,6 +39,7 @@ export default function OddOneOutGame({ meta, onExit }: GameProps) {
       bestStreak={game.bestStreak}
       highScore={game.highScore}
       isNewHighScore={game.isNewHighScore}
+      unlocked={game.unlocked}
       timerProgress={game.timerProgress}
       onStart={game.begin}
       onReplay={game.begin}

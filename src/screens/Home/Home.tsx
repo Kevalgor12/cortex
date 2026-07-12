@@ -1,27 +1,35 @@
 import type { GameId, GameMeta } from '../../types/game';
-import { BrainIcon, LockIcon } from '../../components/icons';
+import { BrainIcon, ChartIcon, LockIcon } from '../../components/icons';
 import './Home.scss';
 
 interface HomeProps {
   games: GameMeta[];
   onSelect: (id: GameId) => void;
+  onOpenStats: () => void;
 }
 
-export default function Home({ games, onSelect }: HomeProps) {
+export default function Home({ games, onSelect, onOpenStats }: HomeProps) {
   return (
     <div className="home container">
-      <header className="home__hero">
-        <div className="home__brand">
+      <header className="home__top">
+        <span className="home__brand">
           <BrainIcon className="home__brand-icon" />
           Cortex
-        </div>
+        </span>
+        <button className="home__stats-btn" onClick={onOpenStats}>
+          <ChartIcon />
+          Stats
+        </button>
+      </header>
+
+      <div className="home__hero">
         <h1 className="home__headline">
           Train your brain in <span>five minutes</span>.
         </h1>
         <p className="home__subhead">
           Fast, focused challenges for reasoning, memory and speed. Beat your best, build a streak.
         </p>
-      </header>
+      </div>
 
       <section className="home__grid" aria-label="Games">
         {games.map((game) => (

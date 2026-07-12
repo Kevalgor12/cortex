@@ -3,12 +3,13 @@ import { STARTING_LIVES, useGameSession } from './useGameSession';
 import { scoreRound } from './scoring';
 import { levelForRound, timeForLevel, type DifficultyConfig } from './difficulty';
 import { useCountdown } from '../hooks/useCountdown';
-import { useHighScore } from '../hooks/useHighScore';
+import { useRunRecorder } from '../hooks/useRunRecorder';
+import type { GameId } from '../types/game';
 
 export type ChallengePhase = 'answer' | 'reveal';
 
 interface ChallengeGameOptions<C> {
-  gameId: string;
+  gameId: GameId;
   difficulty: DifficultyConfig;
   /** Build the next round's challenge for a given difficulty level. */
   generate: (level: number) => C;
@@ -31,12 +32,11 @@ export function useChallengeGame<C, S>({
   revealMs = DEFAULT_REVEAL,
 }: ChallengeGameOptions<C>) {
   const { state, start: startSession, submit } = useGameSession();
-  const { highScore, recordScore } = useHighScore(gameId);
+  const { highScore, isNewHighScore, unlocked } = useRunRecorder(gameId, state);
 
   const [challenge, setChallenge] = useState<C | null>(null);
   const [selection, setSelection] = useState<S | null>(null);
   const [phase, setPhase] = useState<ChallengePhase>('answer');
-  const [isNewHighScore, setIsNewHighScore] = useState(false);
 
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -89,17 +89,9 @@ export function useChallengeGame<C, S>({
 
   const begin = useCallback(() => {
     window.clearTimeout(advanceRef.current);
-    setIsNewHighScore(false);
     startSession();
     startRound(0);
   }, [startSession, startRound]);
-
-  // Persist the personal best the instant a run ends.
-  useEffect(() => {
-    if (state.status === 'over') {
-      setIsNewHighScore(recordScore(state.score));
-    }
-  }, [state.status, state.score, recordScore]);
 
   // Drop any pending advance when leaving the game.
   useEffect(
@@ -123,6 +115,7 @@ export function useChallengeGame<C, S>({
     timerProgress: timer.progress,
     highScore,
     isNewHighScore,
+    unlocked,
     begin,
     answer,
   };

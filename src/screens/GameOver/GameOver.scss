@@ -113,6 +113,68 @@
     letter-spacing: 0.06em;
   }
 
+  &__unlocks {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 22px;
+  }
+
+  &__unlock {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: var(--radius);
+    text-align: left;
+    background: linear-gradient(180deg, rgba(245, 158, 11, 0.16), rgba(245, 158, 11, 0.06));
+    border: 1px solid color-mix(in srgb, var(--warning) 40%, transparent);
+    animation: badge-pop 0.5s ease-out backwards;
+
+    &:nth-child(2) {
+      animation-delay: 0.12s;
+    }
+    &:nth-child(3) {
+      animation-delay: 0.24s;
+    }
+  }
+
+  &__unlock-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    color: var(--warning);
+    background: color-mix(in srgb, var(--warning) 18%, transparent);
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  &__unlock-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__unlock-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--warning);
+  }
+
+  &__unlock-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
   &__actions {
     display: flex;
     flex-direction: column;

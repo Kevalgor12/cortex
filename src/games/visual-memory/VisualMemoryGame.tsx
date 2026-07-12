@@ -3,7 +3,7 @@ import type { GameProps } from '../../types/game';
 import { STARTING_LIVES, useGameSession } from '../../engine/useGameSession';
 import { scoreRound } from '../../engine/scoring';
 import { useCountdown } from '../../hooks/useCountdown';
-import { useHighScore } from '../../hooks/useHighScore';
+import { useRunRecorder } from '../../hooks/useRunRecorder';
 import GameFrame from '../../components/GameFrame/GameFrame';
 import { createBoard, memorizeDuration, recallDuration, type MemoryBoard } from './board';
 import './VisualMemoryGame.scss';
@@ -15,13 +15,12 @@ type Phase = 'memorize' | 'recall' | 'reveal';
 
 export default function VisualMemoryGame({ meta, onExit }: GameProps) {
   const { state, start: startSession, submit } = useGameSession();
-  const { highScore, recordScore } = useHighScore(meta.id);
+  const { highScore, isNewHighScore, unlocked } = useRunRecorder(meta.id, state);
 
   const [board, setBoard] = useState<MemoryBoard | null>(null);
   const [phase, setPhase] = useState<Phase>('memorize');
   const [found, setFound] = useState<number[]>([]);
   const [wrong, setWrong] = useState<number | null>(null);
-  const [isNewHighScore, setIsNewHighScore] = useState(false);
 
   // Refs keep the timer/deferred callbacks reading current values.
   const boardRef = useRef<MemoryBoard | null>(null);
@@ -112,14 +111,9 @@ export default function VisualMemoryGame({ meta, onExit }: GameProps) {
 
   const begin = useCallback(() => {
     window.clearTimeout(advanceRef.current);
-    setIsNewHighScore(false);
     startSession();
     startRound(0);
   }, [startSession, startRound]);
-
-  useEffect(() => {
-    if (state.status === 'over') setIsNewHighScore(recordScore(state.score));
-  }, [state.status, state.score, recordScore]);
 
   useEffect(
     () => () => {
@@ -161,6 +155,7 @@ export default function VisualMemoryGame({ meta, onExit }: GameProps) {
       bestStreak={state.bestStreak}
       highScore={highScore}
       isNewHighScore={isNewHighScore}
+      unlocked={unlocked}
       timerProgress={timer.progress}
       onStart={begin}
       onReplay={begin}

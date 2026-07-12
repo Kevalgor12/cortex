@@ -1,3 +1,4 @@
+import type { Achievement } from '../../data/achievements';
 import Button from '../../components/Button/Button';
 import { HomeIcon, RefreshIcon, SparkleIcon, TrophyIcon } from '../../components/icons';
 import './GameOver.scss';
@@ -7,6 +8,7 @@ interface GameOverProps {
   bestStreak: number;
   highScore: number;
   isNewHighScore: boolean;
+  unlocked: Achievement[];
   onReplay: () => void;
   onExit: () => void;
 }
@@ -16,6 +18,7 @@ export default function GameOver({
   bestStreak,
   highScore,
   isNewHighScore,
+  unlocked,
   onReplay,
   onExit,
 }: GameOverProps) {
@@ -48,6 +51,25 @@ export default function GameOver({
           <span className="gameover__stat-label">All-time best</span>
         </div>
       </div>
+
+      {unlocked.length > 0 && (
+        <div className="gameover__unlocks">
+          {unlocked.map((achievement) => {
+            const Icon = achievement.icon;
+            return (
+              <div className="gameover__unlock" key={achievement.id}>
+                <span className="gameover__unlock-icon">
+                  <Icon />
+                </span>
+                <span className="gameover__unlock-text">
+                  <span className="gameover__unlock-eyebrow">Achievement unlocked</span>
+                  <span className="gameover__unlock-name">{achievement.name}</span>
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       <div className="gameover__actions">
         <Button variant="primary" size="lg" block onClick={onReplay}>

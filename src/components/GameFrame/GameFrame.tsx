@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { GameMeta } from '../../types/game';
 import type { GameStatus } from '../../engine/useGameSession';
+import type { Achievement } from '../../data/achievements';
 import Button from '../Button/Button';
 import GameHud from '../GameHud/GameHud';
 import TimerBar from '../TimerBar/TimerBar';
@@ -18,6 +19,7 @@ interface GameFrameProps {
   bestStreak: number;
   highScore: number;
   isNewHighScore: boolean;
+  unlocked: Achievement[];
   timerProgress: number;
   onStart: () => void;
   onReplay: () => void;
@@ -40,6 +42,7 @@ export default function GameFrame({
   bestStreak,
   highScore,
   isNewHighScore,
+  unlocked,
   timerProgress,
   onStart,
   onReplay,
@@ -97,6 +100,7 @@ export default function GameFrame({
             bestStreak={bestStreak}
             highScore={highScore}
             isNewHighScore={isNewHighScore}
+            unlocked={unlocked}
             onReplay={onReplay}
             onExit={onExit}
           />

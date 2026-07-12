@@ -40,6 +40,7 @@ export default function LogicChallengeGame({ meta, onExit }: GameProps) {
       bestStreak={game.bestStreak}
       highScore={game.highScore}
       isNewHighScore={game.isNewHighScore}
+      unlocked={game.unlocked}
       timerProgress={game.timerProgress}
       onStart={game.begin}
       onReplay={game.begin}

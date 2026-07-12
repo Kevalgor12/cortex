@@ -143,3 +143,51 @@ export function SparkleIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function ChartIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <path d="M5 4v15a1 1 0 0 0 1 1h14" />
+      <rect x="8" y="12" width="3" height="5" rx="0.6" />
+      <rect x="13" y="9" width="3" height="8" rx="0.6" />
+      <rect x="18" y="6" width="3" height="11" rx="0.6" />
+    </svg>
+  );
+}
+
+export function MedalIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <path d="M8 3 12 9 16 3" />
+      <path d="M9.5 3h5" />
+      <circle cx="12" cy="15" r="5.5" />
+      <path d="M12 12.5 12.9 14.2 14.7 14.5 13.4 15.8 13.7 17.6 12 16.8 10.3 17.6 10.6 15.8 9.3 14.5 11.1 14.2Z" />
+    </svg>
+  );
+}
+
+export function TargetIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <circle cx="12" cy="12" r="8" />
+      <circle cx="12" cy="12" r="4.5" />
+      <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function BoltIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <path d="M13 3 5 13h5l-1 8 8-10h-5l1-8Z" />
+    </svg>
+  );
+}
+
+export function StarIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 17l-5.3 2.8 1-5.8-4.2-4.1 5.9-.9Z" />
+    </svg>
+  );
+}
