@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
+import { useCountUp } from '../../hooks/useCountUp';
 import { withSeededRandom } from '../../lib/rng';
 import { completeDaily, dateSeed, isDoneToday, readDaily, todayKey, type DailyState } from '../../lib/daily';
 import { createPatternChallenge, type PatternChallenge } from '../../games/pattern-recognition/patterns';
@@ -7,6 +8,7 @@ import { createMathChallenge, type MathChallenge } from '../../games/quick-math/
 import { createLogicChallenge, type LogicChallenge } from '../../games/logic/series';
 import { createOddChallenge, type OddChallenge } from '../../games/odd-one-out/odd';
 import Button from '../../components/Button/Button';
+import Confetti from '../../components/Confetti/Confetti';
 import { ArrowLeftIcon, CalendarIcon, CheckIcon, FlameIcon, HomeIcon } from '../../components/icons';
 import './DailyChallenge.scss';
 
@@ -160,13 +162,17 @@ function Result({
   justPlayed: boolean;
   onExit: () => void;
 }) {
+  const shownScore = useCountUp(state.lastScore);
+  const perfect = justPlayed && state.lastTotal > 0 && state.lastCorrect === state.lastTotal;
+
   return (
     <div className="daily__result">
+      {perfect && <Confetti />}
       <div className="daily__result-check">
         <CheckIcon />
       </div>
       <p className="daily__result-eyebrow">{justPlayed ? 'Daily complete' : 'Already done today'}</p>
-      <div className="daily__result-score">{state.lastScore}</div>
+      <div className="daily__result-score">{shownScore}</div>
       <p className="daily__result-detail">
         {state.lastCorrect}/{state.lastTotal} correct
       </p>

@@ -2,16 +2,13 @@
   --accent: #2dd4bf;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  min-height: 100dvh;
-  padding-bottom: 32px;
+  flex: 1;
 
   &__bar {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding-top: 18px;
-    padding-bottom: 18px;
+    padding-bottom: 22px;
   }
 
   &__back {

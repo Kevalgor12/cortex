@@ -2,14 +2,12 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding-bottom: 32px;
 
   &__bar {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding-top: 18px;
-    padding-bottom: 18px;
+    padding-bottom: 22px;
   }
 
   &__back {

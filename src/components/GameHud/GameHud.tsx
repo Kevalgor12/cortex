@@ -21,7 +21,12 @@ export default function GameHud({ score, streak, lives, maxLives }: GameHudProps
 
       <div className="hud__block hud__block--center">
         <span className="hud__label">Streak</span>
-        <span key={streak} className={`hud__streak${streak >= 3 ? ' is-hot' : ''}`}>
+        <span
+          key={streak}
+          className={`hud__streak${streak >= 3 ? ' is-hot' : ''}${
+            streak > 0 && streak % 5 === 0 ? ' is-milestone' : ''
+          }`}
+        >
           <FlameIcon className="hud__flame" />
           {streak}
         </span>

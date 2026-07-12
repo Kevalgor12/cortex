@@ -1,5 +1,7 @@
 import type { Achievement } from '../../data/achievements';
+import { useCountUp } from '../../hooks/useCountUp';
 import Button from '../../components/Button/Button';
+import Confetti from '../../components/Confetti/Confetti';
 import { HomeIcon, RefreshIcon, SparkleIcon, TrophyIcon } from '../../components/icons';
 import './GameOver.scss';
 
@@ -22,8 +24,12 @@ export default function GameOver({
   onReplay,
   onExit,
 }: GameOverProps) {
+  const shownScore = useCountUp(score);
+
   return (
     <div className="gameover">
+      {isNewHighScore && <Confetti />}
+
       <div className={`gameover__medal${isNewHighScore ? ' is-record' : ''}`}>
         <TrophyIcon className="gameover__trophy" />
         {isNewHighScore && <span className="gameover__ring" />}
@@ -38,7 +44,7 @@ export default function GameOver({
         <p className="gameover__eyebrow">Run complete</p>
       )}
 
-      <div className="gameover__score">{score}</div>
+      <div className="gameover__score">{shownScore}</div>
       <p className="gameover__score-label">points</p>
 
       <div className="gameover__stats">
