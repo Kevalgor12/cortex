@@ -2,6 +2,7 @@ import type { GameMeta } from '../types/game';
 import { LogicIcon, MathIcon, MemoryIcon, OddOneOutIcon, PatternIcon } from '../components/icons';
 import PatternRecognitionGame from '../games/pattern-recognition/PatternRecognitionGame';
 import QuickMathGame from '../games/quick-math/QuickMathGame';
+import VisualMemoryGame from '../games/visual-memory/VisualMemoryGame';
 
 // The full roster. Games without `available: true` are shown as "coming soon"
 // on the home screen and get wired up in later phases.
@@ -42,12 +43,17 @@ export const GAMES: GameMeta[] = [
     id: 'visual-memory',
     name: 'Visual Memory',
     tagline: 'Remember the tiles that lit up',
-    description: 'Watch the grid, then reproduce the pattern from memory.',
+    description: 'A grid of tiles flashes for a moment. Reproduce it from memory before the clock runs out.',
     skill: 'Memory',
     accent: '#38bdf8',
     icon: MemoryIcon,
-    howTo: [],
-    available: false,
+    howTo: [
+      'Watch which tiles light up, then they hide.',
+      'Tap every tile that was lit — in any order.',
+      'One wrong tile costs a life; clear the board to level up.',
+    ],
+    available: true,
+    component: VisualMemoryGame,
   },
   {
     id: 'logic',
