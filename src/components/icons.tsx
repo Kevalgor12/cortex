@@ -210,6 +210,23 @@ export function CheckIcon({ className }: IconProps) {
   );
 }
 
+export function SunIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <circle cx="12" cy="12" r="4.2" fill="currentColor" stroke="none" />
+      <path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8" />
+    </svg>
+  );
+}
+
+export function MoonIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <path d="M20 13.5A8 8 0 0 1 9.5 4a7 7 0 1 0 10.5 9.5Z" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 export function CrownIcon({ className }: IconProps) {
   return (
     <svg {...base} className={className} aria-hidden="true">

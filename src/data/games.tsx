@@ -6,6 +6,7 @@ import {
   MemoryIcon,
   OddOneOutIcon,
   PatternIcon,
+  SunIcon,
   ZipIcon,
 } from '../components/icons';
 import PatternRecognitionGame from '../games/pattern-recognition/PatternRecognitionGame';
@@ -15,6 +16,7 @@ import LogicChallengeGame from '../games/logic/LogicChallengeGame';
 import OddOneOutGame from '../games/odd-one-out/OddOneOutGame';
 import ZipGame from '../games/zip/ZipGame';
 import QueensGame from '../games/queens/QueensGame';
+import TangoGame from '../games/tango/TangoGame';
 
 // The full roster. Games without `available: true` are shown as "coming soon"
 // on the home screen and get wired up in later phases.
@@ -130,5 +132,21 @@ export const GAMES: GameMeta[] = [
     ],
     available: true,
     component: QueensGame,
+  },
+  {
+    id: 'tango',
+    name: 'Tango',
+    tagline: 'Balance the suns and moons',
+    description: 'Fill the grid so each row and column has three suns and three moons, obeying every = and × clue.',
+    skill: 'Logic',
+    accent: '#f43f5e',
+    icon: SunIcon,
+    howTo: [
+      'Each row and column needs three suns and three moons.',
+      'No more than two of the same symbol sit next to each other.',
+      '= means neighbours match; × means they differ.',
+    ],
+    available: true,
+    component: TangoGame,
   },
 ];

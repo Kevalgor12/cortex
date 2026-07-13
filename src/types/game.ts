@@ -9,7 +9,8 @@ export type GameId =
   | 'logic'
   | 'odd-one-out'
   | 'zip'
-  | 'queens';
+  | 'queens'
+  | 'tango';
 
 export interface GameMeta {
   id: GameId;
