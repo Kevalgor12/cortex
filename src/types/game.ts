@@ -8,7 +8,8 @@ export type GameId =
   | 'visual-memory'
   | 'logic'
   | 'odd-one-out'
-  | 'zip';
+  | 'zip'
+  | 'queens';
 
 export interface GameMeta {
   id: GameId;

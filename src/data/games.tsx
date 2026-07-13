@@ -1,11 +1,20 @@
 import type { GameMeta } from '../types/game';
-import { LogicIcon, MathIcon, MemoryIcon, OddOneOutIcon, PatternIcon, ZipIcon } from '../components/icons';
+import {
+  CrownIcon,
+  LogicIcon,
+  MathIcon,
+  MemoryIcon,
+  OddOneOutIcon,
+  PatternIcon,
+  ZipIcon,
+} from '../components/icons';
 import PatternRecognitionGame from '../games/pattern-recognition/PatternRecognitionGame';
 import QuickMathGame from '../games/quick-math/QuickMathGame';
 import VisualMemoryGame from '../games/visual-memory/VisualMemoryGame';
 import LogicChallengeGame from '../games/logic/LogicChallengeGame';
 import OddOneOutGame from '../games/odd-one-out/OddOneOutGame';
 import ZipGame from '../games/zip/ZipGame';
+import QueensGame from '../games/queens/QueensGame';
 
 // The full roster. Games without `available: true` are shown as "coming soon"
 // on the home screen and get wired up in later phases.
@@ -105,5 +114,21 @@ export const GAMES: GameMeta[] = [
     ],
     available: true,
     component: ZipGame,
+  },
+  {
+    id: 'queens',
+    name: 'Queens',
+    tagline: 'One crown per row, column and colour',
+    description: 'Place a crown in every row, column and colour region so that no two crowns touch.',
+    skill: 'Deduction',
+    accent: '#a855f7',
+    icon: CrownIcon,
+    howTo: [
+      'Place one crown in each row, column and colour region.',
+      'No two crowns may touch — not even diagonally.',
+      'Tap once to mark a spot, twice for a crown, again to clear.',
+    ],
+    available: true,
+    component: QueensGame,
   },
 ];

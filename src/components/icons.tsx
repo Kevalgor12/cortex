@@ -210,6 +210,18 @@ export function CheckIcon({ className }: IconProps) {
   );
 }
 
+export function CrownIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <path
+        d="M4 8.5 7.5 12 12 6l4.5 6L20 8.5 18.5 18.5h-13z"
+        fill="currentColor"
+        stroke="none"
+      />
+    </svg>
+  );
+}
+
 export function ZipIcon({ className }: IconProps) {
   return (
     <svg {...base} className={className} aria-hidden="true">
