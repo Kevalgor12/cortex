@@ -3,6 +3,8 @@ import type { GameProps } from '../../types/game';
 import { readValue, writeValue } from '../../lib/storage';
 import Button from '../../components/Button/Button';
 import Confetti from '../../components/Confetti/Confetti';
+import HintButton from '../../components/HintButton/HintButton';
+import { useHintCooldown } from '../../hooks/useHintCooldown';
 import { ArrowLeftIcon, HomeIcon, MoonIcon, RefreshIcon, SunIcon } from '../../components/icons';
 import { createTangoPuzzle, evaluateTango, type TangoPuzzle } from './tango';
 import './TangoGame.scss';
@@ -23,18 +25,26 @@ export default function TangoGame({ meta, onExit }: GameProps) {
   const [elapsed, setElapsed] = useState(0);
   const [best, setBest] = useState<number | null>(() => readValue<number | null>(BEST_KEY, null));
   const [isBest, setIsBest] = useState(false);
+  const [hintCell, setHintCell] = useState<number | null>(null);
+  const [hintMsg, setHintMsg] = useState('');
+  const [hintUsed, setHintUsed] = useState(false);
+  const hint = useHintCooldown();
 
   const valuesRef = useRef(values);
   valuesRef.current = values;
   const solvedRef = useRef(false);
   solvedRef.current = solved;
   const startRef = useRef(performance.now());
+  const hintUsedRef = useRef(false);
+  const hintTimerRef = useRef<number>();
 
   useEffect(() => {
     if (solved) return;
     const id = window.setInterval(() => setElapsed(performance.now() - startRef.current), 250);
     return () => window.clearInterval(id);
   }, [solved, puzzle]);
+
+  useEffect(() => () => window.clearTimeout(hintTimerRef.current), []);
 
   const newGame = useCallback(() => {
     const next = createTangoPuzzle(SIZE);
@@ -45,7 +55,39 @@ export default function TangoGame({ meta, onExit }: GameProps) {
     setIsBest(false);
     setElapsed(0);
     startRef.current = performance.now();
-  }, []);
+    window.clearTimeout(hintTimerRef.current);
+    setHintCell(null);
+    setHintMsg('');
+    setHintUsed(false);
+    hintUsedRef.current = false;
+    hint.reset();
+  }, [hint]);
+
+  // Reveal the correct symbol for one still-empty cell.
+  const useHint = useCallback(() => {
+    if (!hint.ready || solvedRef.current) return;
+    const vals = valuesRef.current;
+    let target = -1;
+    for (let i = 0; i < vals.length; i++) {
+      if (vals[i] === -1 && puzzle.given[i] < 0) {
+        target = i;
+        break;
+      }
+    }
+    if (target === -1) return;
+
+    setHintCell(target);
+    setHintMsg(`The glowing cell is a ${puzzle.solution[target] === 0 ? 'sun' : 'moon'}.`);
+    setHintUsed(true);
+    hintUsedRef.current = true;
+    hint.use();
+
+    window.clearTimeout(hintTimerRef.current);
+    hintTimerRef.current = window.setTimeout(() => {
+      setHintCell(null);
+      setHintMsg('');
+    }, 3000);
+  }, [hint, puzzle]);
 
   const clearBoard = useCallback(() => {
     if (solvedRef.current) return;
@@ -68,7 +110,7 @@ export default function TangoGame({ meta, onExit }: GameProps) {
         setElapsed(time);
         setSolved(true);
         const prevBest = readValue<number | null>(BEST_KEY, null);
-        if (prevBest === null || time < prevBest) {
+        if (!hintUsedRef.current && (prevBest === null || time < prevBest)) {
           writeValue(BEST_KEY, time);
           setBest(time);
           setIsBest(true);
@@ -102,7 +144,8 @@ export default function TangoGame({ meta, onExit }: GameProps) {
             <p className="tango__result-eyebrow">Solved</p>
             <div className="tango__result-time">{formatTime(elapsed)}</div>
             {isBest && <p className="tango__result-best">New best time!</p>}
-            {!isBest && best !== null && (
+            {hintUsed && <p className="tango__result-detail">Solved with a hint</p>}
+            {!isBest && !hintUsed && best !== null && (
               <p className="tango__result-detail">Best: {formatTime(best)}</p>
             )}
             <div className="tango__actions">
@@ -133,11 +176,14 @@ export default function TangoGame({ meta, onExit }: GameProps) {
                 return (
                   <button
                     key={i}
-                    className={`tango__cell${locked ? ' is-locked' : ''}${violations.has(i) ? ' is-bad' : ''}`}
+                    className={`tango__cell${locked ? ' is-locked' : ''}${violations.has(i) ? ' is-bad' : ''}${hintCell === i ? ' is-hint' : ''}`}
                     onClick={() => tap(i)}
                     aria-label={`Cell ${i + 1}`}
                   >
                     {symbol(v)}
+                    {hintCell === i && v === -1 && (
+                      <span className="tango__ghost">{symbol(puzzle.solution[i])}</span>
+                    )}
                   </button>
                 );
               })}
@@ -162,7 +208,15 @@ export default function TangoGame({ meta, onExit }: GameProps) {
               </div>
             </div>
 
+            <p className={`tango__hint-msg${hintMsg ? ' is-shown' : ''}`}>{hintMsg}</p>
+
             <div className="tango__controls">
+              <HintButton
+                ready={hint.ready}
+                remainingSec={hint.remainingSec}
+                progress={hint.progress}
+                onUse={useHint}
+              />
               <Button variant="subtle" onClick={clearBoard}>
                 <RefreshIcon />
                 Clear

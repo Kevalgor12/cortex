@@ -1,0 +1,93 @@
+.hint-btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition:
+    transform 0.12s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+
+  svg {
+    width: 1.1em;
+    height: 1.1em;
+  }
+
+  &__icon {
+    display: inline-flex;
+    color: var(--warning);
+  }
+
+  &__label {
+    font-variant-numeric: tabular-nums;
+  }
+
+  // Ready — invite the tap with a soft amber pulse and a flickering bulb.
+  &.is-ready {
+    border-color: color-mix(in srgb, var(--warning) 50%, transparent);
+    animation: hint-glow 2s ease-in-out infinite;
+
+    &:hover {
+      transform: translateY(-1px);
+      background: var(--surface);
+      border-color: var(--warning);
+    }
+    &:active {
+      transform: translateY(1px) scale(0.97);
+    }
+    .hint-btn__icon {
+      animation: hint-flicker 2s ease-in-out infinite;
+    }
+  }
+
+  &:disabled {
+    cursor: default;
+    color: var(--text-muted);
+
+    .hint-btn__icon {
+      color: var(--text-faint);
+    }
+
+    // Cooldown bar fills left-to-right as the timer recharges.
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 3px;
+      width: 100%;
+      background: var(--warning);
+      opacity: 0.7;
+      transform-origin: left center;
+      transform: scaleX(var(--hint-progress, 0));
+      transition: transform 0.15s linear;
+    }
+  }
+}
+
+@keyframes hint-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.12);
+  }
+}
+
+@keyframes hint-flicker {
+  0%, 100% {
+    filter: drop-shadow(0 0 0 rgba(245, 158, 11, 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.7));
+  }
+}

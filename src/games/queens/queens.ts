@@ -95,17 +95,25 @@ function growRegions(size: number, cols: number[]): number[] {
   return region;
 }
 
-// Count solutions (capped at `limit`) for the region layout under all rules.
-function countSolutions(size: number, regions: number[], limit: number): number {
+// Find one solution that differs from `target`, or null if `target` is the
+// only solution. Region-only clues rarely give uniqueness on their own, so
+// this drives the repair loop below.
+function findOtherSolution(size: number, regions: number[], target: number[]): number[] | null {
   const usedCol = new Array<boolean>(size).fill(false);
   const usedRegion = new Array<boolean>(size).fill(false);
-  let count = 0;
+  const cur = new Array<number>(size);
+  let result: number[] | null = null;
 
   const rec = (row: number, prevCol: number) => {
-    if (count >= limit) return;
+    if (result) return;
     if (row === size) {
-      count++;
-      return;
+      for (let r = 0; r < size; r++) {
+        if (cur[r] !== target[r]) {
+          result = cur.slice();
+          return;
+        }
+      }
+      return; // identical to target — ignore
     }
     for (let c = 0; c < size; c++) {
       if (usedCol[c]) continue;
@@ -114,29 +122,91 @@ function countSolutions(size: number, regions: number[], limit: number): number 
       if (usedRegion[reg]) continue;
       usedCol[c] = true;
       usedRegion[reg] = true;
+      cur[row] = c;
       rec(row + 1, c);
       usedCol[c] = false;
       usedRegion[reg] = false;
-      if (count >= limit) return;
+      if (result) return;
     }
   };
 
   rec(0, -99);
-  return count;
+  return result;
 }
 
+// Would region `id` stay connected if cell `exclude` were removed from it?
+function connectedWithout(size: number, regions: number[], id: number, exclude: number): boolean {
+  const cells: number[] = [];
+  for (let i = 0; i < size * size; i++) if (regions[i] === id && i !== exclude) cells.push(i);
+  if (cells.length <= 1) return true;
+
+  const set = new Set(cells);
+  const seen = new Set([cells[0]]);
+  const stack = [cells[0]];
+  while (stack.length) {
+    const c = stack.pop()!;
+    for (const n of neighbors4(c, size)) {
+      if (set.has(n) && !seen.has(n)) {
+        seen.add(n);
+        stack.push(n);
+      }
+    }
+  }
+  return seen.size === cells.length;
+}
+
+// Reshape regions to invalidate the alternate solution `other` while keeping
+// the intended solution `cols` valid: move one of `other`'s queen cells (which
+// is never a `cols` queen cell) into an adjacent region, forcing that region to
+// hold two of `other`'s queens. Returns false if no safe reshape was found.
+function breakSolution(size: number, regions: number[], cols: number[], other: number[]): boolean {
+  const rows = shuffle(range(size).filter((r) => cols[r] !== other[r]));
+  for (const r of rows) {
+    const q = r * size + other[r];
+    const region = regions[q];
+    const neighbourRegions = neighbors4(q, size)
+      .map((n) => regions[n])
+      .filter((rg) => rg !== region);
+    if (!neighbourRegions.length) continue;
+    if (!connectedWithout(size, regions, region, q)) continue;
+
+    regions[q] = neighbourRegions[Math.floor(Math.random() * neighbourRegions.length)];
+    return true;
+  }
+  return false;
+}
+
+// Grow regions from the placement, then repair until the placement is the only
+// solution.
 export function createQueensPuzzle(size = 8): QueensPuzzle {
-  for (let attempt = 0; attempt < 500; attempt++) {
+  for (let attempt = 0; attempt < 120; attempt++) {
     const cols = randomPlacement(size);
     if (!cols) continue;
     const regions = growRegions(size, cols);
-    if (countSolutions(size, regions, 2) === 1) {
+
+    let repaired = true;
+    for (let step = 0; step < 500; step++) {
+      const other = findOtherSolution(size, regions, cols);
+      if (!other) break;
+      if (!breakSolution(size, regions, cols, other)) {
+        repaired = false;
+        break;
+      }
+      if (step === 499) repaired = false;
+    }
+    if (repaired && findOtherSolution(size, regions, cols) === null) {
       return { size, regions, solution: cols };
     }
   }
-  // Extremely unlikely fallback: accept a non-unique layout.
+
+  // Fallback (should effectively never happen): best-effort layout.
   const cols = randomPlacement(size)!;
-  return { size, regions: growRegions(size, cols), solution: cols };
+  const regions = growRegions(size, cols);
+  for (let step = 0; step < 400; step++) {
+    const other = findOtherSolution(size, regions, cols);
+    if (!other || !breakSolution(size, regions, cols, other)) break;
+  }
+  return { size, regions, solution: cols };
 }
 
 export interface QueensEval {

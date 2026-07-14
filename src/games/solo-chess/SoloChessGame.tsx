@@ -3,12 +3,15 @@ import type { GameProps } from '../../types/game';
 import { readValue, writeValue } from '../../lib/storage';
 import Button from '../../components/Button/Button';
 import Confetti from '../../components/Confetti/Confetti';
+import HintButton from '../../components/HintButton/HintButton';
+import { useHintCooldown } from '../../hooks/useHintCooldown';
 import { ArrowLeftIcon, HomeIcon, RefreshIcon } from '../../components/icons';
 import {
   captureTargets,
   countPieces,
   createSoloChessPuzzle,
   hasAnyMove,
+  isSolvable,
   type Board,
   type PieceType,
 } from './soloChess';
@@ -41,10 +44,16 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
   const [elapsed, setElapsed] = useState(0);
   const [best, setBest] = useState<number | null>(() => readValue<number | null>(BEST_KEY, null));
   const [isBest, setIsBest] = useState(false);
+  const [hintMove, setHintMove] = useState<{ from: number; to: number } | null>(null);
+  const [hintMsg, setHintMsg] = useState('');
+  const [hintUsed, setHintUsed] = useState(false);
+  const hint = useHintCooldown();
 
   const solvedRef = useRef(false);
   solvedRef.current = solved;
   const startRef = useRef(performance.now());
+  const hintUsedRef = useRef(false);
+  const hintTimerRef = useRef<number>();
 
   useEffect(() => {
     if (solved) return;
@@ -52,15 +61,59 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
     return () => window.clearInterval(id);
   }, [solved, board]);
 
-  const reset = useCallback((base: Board) => {
-    setBoard(clone(base));
-    setSelected(null);
-    setHistory([]);
-    setSolved(false);
-    setIsBest(false);
-    setElapsed(0);
-    startRef.current = performance.now();
-  }, []);
+  useEffect(() => () => window.clearTimeout(hintTimerRef.current), []);
+
+  const reset = useCallback(
+    (base: Board) => {
+      setBoard(clone(base));
+      setSelected(null);
+      setHistory([]);
+      setSolved(false);
+      setIsBest(false);
+      setElapsed(0);
+      startRef.current = performance.now();
+      window.clearTimeout(hintTimerRef.current);
+      setHintMove(null);
+      setHintMsg('');
+      setHintUsed(false);
+      hintUsedRef.current = false;
+      hint.reset();
+    },
+    [hint],
+  );
+
+  // Suggest a capture that keeps the board solvable (verified by the solver).
+  const useHint = useCallback(() => {
+    if (!hint.ready || solvedRef.current) return;
+    let found: { from: number; to: number } | null = null;
+    for (let from = 0; from < board.length && !found; from++) {
+      const piece = board[from];
+      if (!piece || piece.moves >= 2) continue;
+      for (const to of captureTargets(board, from, SIZE)) {
+        const next = clone(board);
+        next[to] = { type: piece.type, moves: piece.moves + 1 };
+        next[from] = null;
+        if (isSolvable(next, SIZE)) {
+          found = { from, to };
+          break;
+        }
+      }
+    }
+    if (!found) return;
+
+    setHintMove(found);
+    setHintMsg('Move the glowing piece to capture the marked one.');
+    setHintUsed(true);
+    hintUsedRef.current = true;
+    setSelected(found.from);
+    hint.use();
+
+    window.clearTimeout(hintTimerRef.current);
+    hintTimerRef.current = window.setTimeout(() => {
+      setHintMove(null);
+      setHintMsg('');
+    }, 3500);
+  }, [board, hint]);
 
   const newGame = useCallback(() => {
     const next = createSoloChessPuzzle(SIZE, PIECES).board;
@@ -117,7 +170,7 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
           setElapsed(time);
           setSolved(true);
           const prevBest = readValue<number | null>(BEST_KEY, null);
-          if (prevBest === null || time < prevBest) {
+          if (!hintUsedRef.current && (prevBest === null || time < prevBest)) {
             writeValue(BEST_KEY, time);
             setBest(time);
             setIsBest(true);
@@ -149,7 +202,8 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
             <p className="chess__result-eyebrow">Solved</p>
             <div className="chess__result-time">{formatTime(elapsed)}</div>
             {isBest && <p className="chess__result-best">New best time!</p>}
-            {!isBest && best !== null && (
+            {hintUsed && <p className="chess__result-detail">Solved with a hint</p>}
+            {!isBest && !hintUsed && best !== null && (
               <p className="chess__result-detail">Best: {formatTime(best)}</p>
             )}
             <div className="chess__actions">
@@ -180,6 +234,8 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
                   dark ? 'is-dark' : 'is-light',
                   isSel ? 'is-selected' : '',
                   isTarget ? 'is-target' : '',
+                  hintMove?.from === i ? 'is-hint-from' : '',
+                  hintMove?.to === i ? 'is-hint-to' : '',
                 ]
                   .filter(Boolean)
                   .join(' ');
@@ -203,7 +259,15 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
               })}
             </div>
 
+            <p className={`chess__hint-msg${hintMsg ? ' is-shown' : ''}`}>{hintMsg}</p>
+
             <div className="chess__controls">
+              <HintButton
+                ready={hint.ready}
+                remainingSec={hint.remainingSec}
+                progress={hint.progress}
+                onUse={useHint}
+              />
               <Button variant="subtle" onClick={undo} disabled={history.length === 0}>
                 Undo
               </Button>

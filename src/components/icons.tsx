@@ -210,6 +210,15 @@ export function CheckIcon({ className }: IconProps) {
   );
 }
 
+export function BulbIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <path d="M9.5 17.5h5M10.5 20.5h3" />
+      <path d="M12 3a6 6 0 0 0-3.8 10.6c.7.6 1.3 1.3 1.3 2.2v.2h5v-.2c0-.9.6-1.6 1.3-2.2A6 6 0 0 0 12 3Z" />
+    </svg>
+  );
+}
+
 export function SunIcon({ className }: IconProps) {
   return (
     <svg {...base} className={className} aria-hidden="true">

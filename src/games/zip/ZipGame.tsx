@@ -4,6 +4,8 @@ import type { GameProps } from '../../types/game';
 import { readValue, writeValue } from '../../lib/storage';
 import Button from '../../components/Button/Button';
 import Confetti from '../../components/Confetti/Confetti';
+import HintButton from '../../components/HintButton/HintButton';
+import { useHintCooldown } from '../../hooks/useHintCooldown';
 import { ArrowLeftIcon, HomeIcon, RefreshIcon } from '../../components/icons';
 import { areAdjacent, createZipPuzzle, isSolved, type ZipPuzzle } from './zip';
 import './ZipGame.scss';
@@ -23,6 +25,10 @@ export default function ZipGame({ meta, onExit }: GameProps) {
   const [elapsed, setElapsed] = useState(0);
   const [best, setBest] = useState<number | null>(() => readValue<number | null>(BEST_KEY, null));
   const [isBest, setIsBest] = useState(false);
+  const [hintCell, setHintCell] = useState<number | null>(null);
+  const [hintMsg, setHintMsg] = useState('');
+  const [hintUsed, setHintUsed] = useState(false);
+  const hint = useHintCooldown();
 
   const pathRef = useRef(path);
   pathRef.current = path;
@@ -31,6 +37,8 @@ export default function ZipGame({ meta, onExit }: GameProps) {
   const startRef = useRef(performance.now());
   const drawingRef = useRef(false);
   const gridRef = useRef<HTMLDivElement>(null);
+  const hintUsedRef = useRef(false);
+  const hintTimerRef = useRef<number>();
 
   // Stopwatch — a 1-tick interval is plenty for a m:ss display, and the final
   // time is measured precisely from performance.now on solve.
@@ -40,6 +48,8 @@ export default function ZipGame({ meta, onExit }: GameProps) {
     return () => window.clearInterval(id);
   }, [solved, puzzle]);
 
+  useEffect(() => () => window.clearTimeout(hintTimerRef.current), []);
+
   const newGame = useCallback(() => {
     const next = createZipPuzzle(SIZE);
     setPuzzle(next);
@@ -48,12 +58,42 @@ export default function ZipGame({ meta, onExit }: GameProps) {
     setIsBest(false);
     setElapsed(0);
     startRef.current = performance.now();
-  }, []);
+    window.clearTimeout(hintTimerRef.current);
+    setHintCell(null);
+    setHintMsg('');
+    setHintUsed(false);
+    hintUsedRef.current = false;
+    hint.reset();
+  }, [hint]);
 
   const clearPath = useCallback(() => {
     if (solvedRef.current) return;
     setPath([puzzle.numbers.indexOf(1)]);
   }, [puzzle]);
+
+  // Reveal the next correct cell: the first place the drawn path leaves the
+  // solution (or the next cell to extend if it's still on track).
+  const useHint = useCallback(() => {
+    if (!hint.ready || solvedRef.current) return;
+    const solution = puzzle.solution;
+    const p = pathRef.current;
+    let k = 0;
+    while (k < p.length && k < solution.length && p[k] === solution[k]) k++;
+    const target = solution[Math.min(k, solution.length - 1)];
+    const deviated = k < p.length;
+
+    setHintCell(target);
+    setHintMsg(deviated ? 'Backtrack — the route runs through the glowing cell.' : 'Draw to the glowing cell next.');
+    setHintUsed(true);
+    hintUsedRef.current = true;
+    hint.use();
+
+    window.clearTimeout(hintTimerRef.current);
+    hintTimerRef.current = window.setTimeout(() => {
+      setHintCell(null);
+      setHintMsg('');
+    }, 3000);
+  }, [hint, puzzle]);
 
   const extendTo = useCallback(
     (cell: number) => {
@@ -84,7 +124,7 @@ export default function ZipGame({ meta, onExit }: GameProps) {
         setElapsed(time);
         setSolved(true);
         const prevBest = readValue<number | null>(BEST_KEY, null);
-        if (prevBest === null || time < prevBest) {
+        if (!hintUsedRef.current && (prevBest === null || time < prevBest)) {
           writeValue(BEST_KEY, time);
           setBest(time);
           setIsBest(true);
@@ -145,7 +185,8 @@ export default function ZipGame({ meta, onExit }: GameProps) {
             <p className="zip__result-eyebrow">Solved</p>
             <div className="zip__result-time">{formatTime(elapsed)}</div>
             {isBest && <p className="zip__result-best">New best time!</p>}
-            {!isBest && best !== null && (
+            {hintUsed && <p className="zip__result-detail">Solved with a hint</p>}
+            {!isBest && !hintUsed && best !== null && (
               <p className="zip__result-detail">Best: {formatTime(best)}</p>
             )}
             <div className="zip__actions">
@@ -202,7 +243,7 @@ export default function ZipGame({ meta, onExit }: GameProps) {
                 return (
                   <button
                     key={i}
-                    className={`zip__cell${visited ? ' is-filled' : ''}`}
+                    className={`zip__cell${visited ? ' is-filled' : ''}${hintCell === i ? ' is-hint' : ''}`}
                     data-cell={i}
                     onClick={() => extendTo(i)}
                     aria-label={value ? `Cell ${i + 1}, number ${value}` : `Cell ${i + 1}`}
@@ -213,7 +254,15 @@ export default function ZipGame({ meta, onExit }: GameProps) {
               })}
             </div>
 
+            <p className={`zip__hint-msg${hintMsg ? ' is-shown' : ''}`}>{hintMsg}</p>
+
             <div className="zip__controls">
+              <HintButton
+                ready={hint.ready}
+                remainingSec={hint.remainingSec}
+                progress={hint.progress}
+                onUse={useHint}
+              />
               <Button variant="subtle" onClick={clearPath}>
                 <RefreshIcon />
                 Clear
