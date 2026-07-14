@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { GameProps } from '../../types/game';
 import { readValue, writeValue } from '../../lib/storage';
 import Button from '../../components/Button/Button';
@@ -44,8 +44,35 @@ export default function QueensGame({ meta, onExit }: GameProps) {
   const [hintUsed, setHintUsed] = useState(false);
   const hint = useHintCooldown();
 
+  // Cells auto-eliminated by the crowns already placed: their whole row, whole
+  // column, and the eight touching cells. Derived from the crowns, so removing
+  // a crown clears its dots automatically.
+  const autoX = useMemo(() => {
+    const set = new Set<number>();
+    marks.forEach((m, i) => {
+      if (m !== 2) return;
+      const r = Math.floor(i / SIZE);
+      const c = i % SIZE;
+      for (let k = 0; k < SIZE; k++) {
+        set.add(r * SIZE + k);
+        set.add(k * SIZE + c);
+      }
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          const rr = r + dr;
+          const cc = c + dc;
+          if (rr >= 0 && rr < SIZE && cc >= 0 && cc < SIZE) set.add(rr * SIZE + cc);
+        }
+      }
+    });
+    marks.forEach((m, i) => m === 2 && set.delete(i));
+    return set;
+  }, [marks]);
+
   const marksRef = useRef(marks);
   marksRef.current = marks;
+  const autoXRef = useRef(autoX);
+  autoXRef.current = autoX;
   const solvedRef = useRef(false);
   solvedRef.current = solved;
   const startRef = useRef(performance.now());
@@ -110,7 +137,10 @@ export default function QueensGame({ meta, onExit }: GameProps) {
     (cell: number) => {
       if (solvedRef.current) return;
       const next = [...marksRef.current];
-      next[cell] = (next[cell] + 1) % 3;
+      const cur = next[cell];
+      // empty → X → crown → empty. An already auto-X'd empty cell jumps
+      // straight to a crown (it's visually a dot already).
+      next[cell] = cur === 2 ? 0 : cur === 1 ? 2 : autoXRef.current.has(cell) ? 2 : 1;
       marksRef.current = next;
       setMarks(next);
 
@@ -189,6 +219,7 @@ export default function QueensGame({ meta, onExit }: GameProps) {
               {regions.map((region, i) => {
                 const mark = marks[i];
                 const conflict = mark === 2 && conflicts.has(i);
+                const auto = mark === 0 && autoX.has(i);
                 return (
                   <button
                     key={i}
@@ -198,7 +229,7 @@ export default function QueensGame({ meta, onExit }: GameProps) {
                     aria-label={`Cell ${i + 1}`}
                   >
                     {mark === 2 && <CrownIcon className="queens__queen" />}
-                    {mark === 1 && <span className="queens__x" />}
+                    {(mark === 1 || auto) && <span className={`queens__x${auto ? ' is-auto' : ''}`} />}
                   </button>
                 );
               })}

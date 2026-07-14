@@ -131,7 +131,26 @@
     width: 26%;
     height: 26%;
     border-radius: 50%;
-    background: rgba(6, 8, 12, 0.4);
+    background: rgba(6, 8, 12, 0.55);
+    animation: dot-in 0.18s ease-out;
+
+    // Auto-placed (from a crown's reach) — a touch softer than a manual mark.
+    &.is-auto {
+      width: 22%;
+      height: 22%;
+      background: rgba(6, 8, 12, 0.32);
+    }
+  }
+
+  @keyframes dot-in {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   &__cell.is-hint {
