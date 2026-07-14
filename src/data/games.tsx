@@ -1,5 +1,6 @@
 import type { GameMeta } from '../types/game';
 import {
+  ChessIcon,
   CrownIcon,
   LogicIcon,
   MathIcon,
@@ -17,6 +18,7 @@ import OddOneOutGame from '../games/odd-one-out/OddOneOutGame';
 import ZipGame from '../games/zip/ZipGame';
 import QueensGame from '../games/queens/QueensGame';
 import TangoGame from '../games/tango/TangoGame';
+import SoloChessGame from '../games/solo-chess/SoloChessGame';
 
 // The full roster. Games without `available: true` are shown as "coming soon"
 // on the home screen and get wired up in later phases.
@@ -148,5 +150,21 @@ export const GAMES: GameMeta[] = [
     ],
     available: true,
     component: TangoGame,
+  },
+  {
+    id: 'solo-chess',
+    name: 'Solo Chess',
+    tagline: 'Capture down to a single piece',
+    description: 'Every move must be a capture and each piece moves at most twice. Clear the board to one piece.',
+    skill: 'Tactics',
+    accent: '#22d3ee',
+    icon: ChessIcon,
+    howTo: [
+      'Tap a piece, then tap a piece it can capture.',
+      'Every move must capture — and each piece moves at most twice.',
+      'Reduce the board to a single piece to win.',
+    ],
+    available: true,
+    component: SoloChessGame,
   },
 ];

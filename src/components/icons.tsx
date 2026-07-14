@@ -227,6 +227,24 @@ export function MoonIcon({ className }: IconProps) {
   );
 }
 
+export function ChessIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <rect x="4" y="4" width="16" height="16" rx="2.5" />
+      <g fill="currentColor" stroke="none">
+        <rect x="4" y="4" width="4" height="4" />
+        <rect x="12" y="4" width="4" height="4" />
+        <rect x="8" y="8" width="4" height="4" />
+        <rect x="16" y="8" width="4" height="4" />
+        <rect x="4" y="12" width="4" height="4" />
+        <rect x="12" y="12" width="4" height="4" />
+        <rect x="8" y="16" width="4" height="4" />
+        <rect x="16" y="16" width="4" height="4" />
+      </g>
+    </svg>
+  );
+}
+
 export function CrownIcon({ className }: IconProps) {
   return (
     <svg {...base} className={className} aria-hidden="true">

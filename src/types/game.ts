@@ -10,7 +10,8 @@ export type GameId =
   | 'odd-one-out'
   | 'zip'
   | 'queens'
-  | 'tango';
+  | 'tango'
+  | 'solo-chess';
 
 export interface GameMeta {
   id: GameId;
