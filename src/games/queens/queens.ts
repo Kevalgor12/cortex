@@ -243,3 +243,66 @@ export function evaluateQueens(queenCells: number[], puzzle: QueensPuzzle): Quee
 
   return { solved: queenCells.length === size && conflicts.size === 0, conflicts };
 }
+
+export interface QueensHint {
+  cell: number;
+  reason: string;
+}
+
+// Suggest the next crown with a reason. Prefer a "naked single" a player can
+// actually deduce — a region, row or column with exactly one square still free
+// of every placed crown — and explain it. Otherwise fall back to the unique
+// solution with a why-it-fits reason.
+export function queensHint(marks: number[], puzzle: QueensPuzzle): QueensHint | null {
+  const { size, regions, solution } = puzzle;
+  const total = size * size;
+
+  const crowns: number[] = [];
+  marks.forEach((m, i) => m === 2 && crowns.push(i));
+
+  const eliminated = new Array<boolean>(total).fill(false);
+  crowns.forEach((cr) => {
+    const cr_r = Math.floor(cr / size);
+    const cr_c = cr % size;
+    const cr_reg = regions[cr];
+    for (let i = 0; i < total; i++) {
+      const r = Math.floor(i / size);
+      const c = i % size;
+      if (r === cr_r || c === cr_c || regions[i] === cr_reg) eliminated[i] = true;
+      if (Math.abs(r - cr_r) <= 1 && Math.abs(c - cr_c) <= 1) eliminated[i] = true;
+    }
+  });
+  marks.forEach((m, i) => m === 1 && (eliminated[i] = true));
+
+  const isCandidate = (i: number) => marks[i] !== 2 && !eliminated[i];
+  const regionHasCrown = (reg: number) => crowns.some((cr) => regions[cr] === reg);
+
+  for (let reg = 0; reg < size; reg++) {
+    if (regionHasCrown(reg)) continue;
+    const open: number[] = [];
+    for (let i = 0; i < total; i++) if (regions[i] === reg && isCandidate(i)) open.push(i);
+    if (open.length === 1)
+      return { cell: open[0], reason: 'This is the only square left in its colour region, so the crown goes here.' };
+  }
+  for (let r = 0; r < size; r++) {
+    if (crowns.some((cr) => Math.floor(cr / size) === r)) continue;
+    const open: number[] = [];
+    for (let c = 0; c < size; c++) if (isCandidate(r * size + c)) open.push(r * size + c);
+    if (open.length === 1)
+      return { cell: open[0], reason: 'Every other square in this row is ruled out, so the crown is here.' };
+  }
+  for (let c = 0; c < size; c++) {
+    if (crowns.some((cr) => cr % size === c)) continue;
+    const open: number[] = [];
+    for (let r = 0; r < size; r++) if (isCandidate(r * size + c)) open.push(r * size + c);
+    if (open.length === 1)
+      return { cell: open[0], reason: 'Only one square is still open in this column, so the crown is here.' };
+  }
+
+  const target = solution.map((c, r) => r * size + c).find((cell) => marks[cell] !== 2);
+  if (target === undefined) return null;
+  return {
+    cell: target,
+    reason: 'This is the crown for its colour region — the one square that shares no row or column with another crown and never touches one.',
+  };
+}

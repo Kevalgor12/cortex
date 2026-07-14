@@ -208,3 +208,74 @@ export function evaluateTango(values: number[], puzzle: TangoPuzzle): TangoEval 
   const filled = values.every((v) => v >= 0);
   return { solved: filled && violations.size === 0, violations };
 }
+
+export interface TangoHint {
+  cell: number;
+  value: number;
+  reason: string;
+}
+
+const symbolName = (v: number) => (v === 0 ? 'sun' : 'moon');
+
+// Find an empty cell whose value can be deduced from a visible rule, and
+// explain that deduction. Rules are checked strongest-first: no-three-in-a-row,
+// then =/× clues, then a full row/column. Falls back to plain elimination.
+export function tangoHint(values: number[], puzzle: TangoPuzzle): TangoHint | null {
+  const { size, given, solution, constraints } = puzzle;
+  const half = size / 2;
+  let fallback = -1;
+
+  for (let i = 0; i < values.length; i++) {
+    if (values[i] !== -1 || given[i] >= 0) continue;
+    if (fallback < 0) fallback = i;
+
+    const v = solution[i];
+    const r = Math.floor(i / size);
+    const c = i % size;
+    const sun = (x: number) => `${symbolName(x)}s`;
+
+    // No three in a row (horizontal / vertical, and the "sandwiched" case).
+    if (c >= 2 && values[i - 1] !== -1 && values[i - 1] === values[i - 2])
+      return { cell: i, value: v, reason: `Two ${sun(values[i - 1])} already sit to the left, so this must be a ${symbolName(v)} — no three in a row.` };
+    if (c <= size - 3 && values[i + 1] !== -1 && values[i + 1] === values[i + 2])
+      return { cell: i, value: v, reason: `Two ${sun(values[i + 1])} sit to the right, so this must be a ${symbolName(v)}.` };
+    if (c >= 1 && c <= size - 2 && values[i - 1] !== -1 && values[i - 1] === values[i + 1])
+      return { cell: i, value: v, reason: `It sits between two ${sun(values[i - 1])}, so it must be a ${symbolName(v)}.` };
+    if (r >= 2 && values[i - size] !== -1 && values[i - size] === values[i - 2 * size])
+      return { cell: i, value: v, reason: `Two ${sun(values[i - size])} sit above, so this must be a ${symbolName(v)}.` };
+    if (r <= size - 3 && values[i + size] !== -1 && values[i + size] === values[i + 2 * size])
+      return { cell: i, value: v, reason: `Two ${sun(values[i + size])} sit below, so this must be a ${symbolName(v)}.` };
+    if (r >= 1 && r <= size - 2 && values[i - size] !== -1 && values[i - size] === values[i + size])
+      return { cell: i, value: v, reason: `It sits between two ${sun(values[i - size])}, so it must be a ${symbolName(v)}.` };
+
+    // A =/× clue whose other end is filled.
+    for (const { a, b, eq } of constraints) {
+      if (a !== i && b !== i) continue;
+      const other = a === i ? b : a;
+      if (values[other] === -1) continue;
+      const forced = eq ? values[other] : 1 - values[other];
+      if (forced !== v) continue;
+      return {
+        cell: i,
+        value: v,
+        reason: eq
+          ? `The = clue makes it match the ${symbolName(values[other])} beside it.`
+          : `The × clue makes it the opposite of the ${symbolName(values[other])} beside it — a ${symbolName(v)}.`,
+      };
+    }
+
+    // A row or column already full of one symbol.
+    let rowOther = 0;
+    for (let cc = 0; cc < size; cc++) if (values[r * size + cc] === 1 - v) rowOther++;
+    if (rowOther === half)
+      return { cell: i, value: v, reason: `This row already has its three ${sun(1 - v)}, so this cell is a ${symbolName(v)}.` };
+    let colOther = 0;
+    for (let rr = 0; rr < size; rr++) if (values[rr * size + c] === 1 - v) colOther++;
+    if (colOther === half)
+      return { cell: i, value: v, reason: `This column already has its three ${sun(1 - v)}, so this cell is a ${symbolName(v)}.` };
+  }
+
+  if (fallback >= 0)
+    return { cell: fallback, value: solution[fallback], reason: `Working through the grid, this cell can only be a ${symbolName(solution[fallback])}.` };
+  return null;
+}

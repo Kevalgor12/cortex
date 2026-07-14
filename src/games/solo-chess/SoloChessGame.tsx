@@ -11,7 +11,7 @@ import {
   countPieces,
   createSoloChessPuzzle,
   hasAnyMove,
-  isSolvable,
+  soloHint,
   type Board,
   type PieceType,
 } from './soloChess';
@@ -82,30 +82,17 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
     [hint],
   );
 
-  // Suggest a capture that keeps the board solvable (verified by the solver).
+  // Suggest a solvable capture and explain why it's the move to make now.
   const useHint = useCallback(() => {
     if (!hint.ready || solvedRef.current) return;
-    let found: { from: number; to: number } | null = null;
-    for (let from = 0; from < board.length && !found; from++) {
-      const piece = board[from];
-      if (!piece || piece.moves >= 2) continue;
-      for (const to of captureTargets(board, from, SIZE)) {
-        const next = clone(board);
-        next[to] = { type: piece.type, moves: piece.moves + 1 };
-        next[from] = null;
-        if (isSolvable(next, SIZE)) {
-          found = { from, to };
-          break;
-        }
-      }
-    }
-    if (!found) return;
+    const suggestion = soloHint(board, SIZE);
+    if (!suggestion) return;
 
-    setHintMove(found);
-    setHintMsg('Move the glowing piece to capture the marked one.');
+    setHintMove({ from: suggestion.from, to: suggestion.to });
+    setHintMsg(suggestion.reason);
     setHintUsed(true);
     hintUsedRef.current = true;
-    setSelected(found.from);
+    setSelected(suggestion.from);
     hint.use();
 
     window.clearTimeout(hintTimerRef.current);

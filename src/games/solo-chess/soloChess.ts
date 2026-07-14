@@ -202,3 +202,43 @@ export function countPieces(board: Board): number {
 export function hasAnyMove(board: Board, size: number): boolean {
   return occupied(board).some((from) => board[from]!.moves < 2 && captureTargets(board, from, size).length > 0);
 }
+
+const PIECE_NAME: Record<PieceType, string> = {
+  queen: 'queen',
+  rook: 'rook',
+  bishop: 'bishop',
+  knight: 'knight',
+};
+
+export interface SoloHint {
+  from: number;
+  to: number;
+  reason: string;
+}
+
+// Suggest a capture that keeps the board solvable, and explain why it's the
+// move to make now.
+export function soloHint(board: Board, size: number): SoloHint | null {
+  for (let from = 0; from < board.length; from++) {
+    const piece = board[from];
+    if (!piece || piece.moves >= 2) continue;
+
+    for (const to of captureTargets(board, from, size)) {
+      const next = board.map((p) => (p ? { ...p } : null));
+      next[to] = { type: piece.type, moves: piece.moves + 1 };
+      next[from] = null;
+      if (!isSolvable(next, size)) continue;
+
+      // Is this the only piece that can take the target?
+      const otherCapturers = occupied(board).some(
+        (f) => f !== from && board[f]!.moves < 2 && captureTargets(board, f, size).includes(to),
+      );
+      const targetName = PIECE_NAME[board[to]!.type];
+      const reason = otherCapturers
+        ? `Take the ${targetName} with this ${PIECE_NAME[piece.type]} — it keeps every remaining piece within reach.`
+        : `Only this ${PIECE_NAME[piece.type]} can take the ${targetName}, so capture it now before it's stranded.`;
+      return { from, to, reason };
+    }
+  }
+  return null;
+}

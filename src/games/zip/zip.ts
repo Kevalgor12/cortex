@@ -112,3 +112,35 @@ export function isSolved(path: number[], puzzle: ZipPuzzle): boolean {
   }
   return expected === count + 1;
 }
+
+export interface ZipHint {
+  cell: number;
+  reason: string;
+}
+
+// Suggest the next cell to draw, with a reason. If the drawn line has left the
+// unique solution, point back to where it diverged.
+export function zipHint(path: number[], puzzle: ZipPuzzle): ZipHint | null {
+  const { size, solution, numbers } = puzzle;
+
+  let k = 0;
+  while (k < path.length && k < solution.length && path[k] === solution[k]) k++;
+
+  if (k < path.length) {
+    return { cell: solution[Math.min(k, solution.length - 1)], reason: 'Your line has left the only route that fills the grid — backtrack to the glowing cell.' };
+  }
+  if (k >= solution.length) return null;
+
+  const target = solution[k];
+  const head = path[path.length - 1];
+  const placed = path.reduce((n, c) => n + (numbers[c] > 0 ? 1 : 0), 0);
+
+  if (numbers[target] === placed + 1) {
+    return { cell: target, reason: `You must reach ${placed + 1} next, and this cell is the step toward it.` };
+  }
+  const openNeighbours = neighbors(head, size).filter((n) => !path.includes(n));
+  if (openNeighbours.length === 1) {
+    return { cell: target, reason: 'Every other neighbour is already used, so this is the only way forward.' };
+  }
+  return { cell: target, reason: 'This keeps the single line on the path that reaches every remaining cell.' };
+}

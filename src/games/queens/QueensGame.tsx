@@ -6,7 +6,7 @@ import Confetti from '../../components/Confetti/Confetti';
 import HintButton from '../../components/HintButton/HintButton';
 import { useHintCooldown } from '../../hooks/useHintCooldown';
 import { ArrowLeftIcon, CrownIcon, HomeIcon, RefreshIcon } from '../../components/icons';
-import { createQueensPuzzle, evaluateQueens, type QueensPuzzle } from './queens';
+import { createQueensPuzzle, evaluateQueens, queensHint, type QueensPuzzle } from './queens';
 import './QueensGame.scss';
 
 const SIZE = 8;
@@ -75,16 +75,14 @@ export default function QueensGame({ meta, onExit }: GameProps) {
     hint.reset();
   }, [hint]);
 
-  // Reveal one correct crown the player hasn't placed yet.
+  // Reveal a deducible crown and explain why it belongs there.
   const useHint = useCallback(() => {
     if (!hint.ready || solvedRef.current) return;
-    const target = puzzle.solution
-      .map((c, r) => r * puzzle.size + c)
-      .find((cell) => marksRef.current[cell] !== 2);
-    if (target === undefined) return;
+    const suggestion = queensHint(marksRef.current, puzzle);
+    if (!suggestion) return;
 
-    setHintCell(target);
-    setHintMsg('A crown belongs on the glowing cell.');
+    setHintCell(suggestion.cell);
+    setHintMsg(suggestion.reason);
     setHintUsed(true);
     hintUsedRef.current = true;
     hint.use();

@@ -7,7 +7,7 @@ import Confetti from '../../components/Confetti/Confetti';
 import HintButton from '../../components/HintButton/HintButton';
 import { useHintCooldown } from '../../hooks/useHintCooldown';
 import { ArrowLeftIcon, HomeIcon, RefreshIcon } from '../../components/icons';
-import { areAdjacent, createZipPuzzle, isSolved, type ZipPuzzle } from './zip';
+import { areAdjacent, createZipPuzzle, isSolved, zipHint, type ZipPuzzle } from './zip';
 import './ZipGame.scss';
 
 const SIZE = 6;
@@ -71,19 +71,14 @@ export default function ZipGame({ meta, onExit }: GameProps) {
     setPath([puzzle.numbers.indexOf(1)]);
   }, [puzzle]);
 
-  // Reveal the next correct cell: the first place the drawn path leaves the
-  // solution (or the next cell to extend if it's still on track).
+  // Reveal the next correct cell, and explain why.
   const useHint = useCallback(() => {
     if (!hint.ready || solvedRef.current) return;
-    const solution = puzzle.solution;
-    const p = pathRef.current;
-    let k = 0;
-    while (k < p.length && k < solution.length && p[k] === solution[k]) k++;
-    const target = solution[Math.min(k, solution.length - 1)];
-    const deviated = k < p.length;
+    const suggestion = zipHint(pathRef.current, puzzle);
+    if (!suggestion) return;
 
-    setHintCell(target);
-    setHintMsg(deviated ? 'Backtrack — the route runs through the glowing cell.' : 'Draw to the glowing cell next.');
+    setHintCell(suggestion.cell);
+    setHintMsg(suggestion.reason);
     setHintUsed(true);
     hintUsedRef.current = true;
     hint.use();

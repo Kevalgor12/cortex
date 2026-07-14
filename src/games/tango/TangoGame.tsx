@@ -6,7 +6,7 @@ import Confetti from '../../components/Confetti/Confetti';
 import HintButton from '../../components/HintButton/HintButton';
 import { useHintCooldown } from '../../hooks/useHintCooldown';
 import { ArrowLeftIcon, HomeIcon, MoonIcon, RefreshIcon, SunIcon } from '../../components/icons';
-import { createTangoPuzzle, evaluateTango, type TangoPuzzle } from './tango';
+import { createTangoPuzzle, evaluateTango, tangoHint, type TangoPuzzle } from './tango';
 import './TangoGame.scss';
 
 const SIZE = 6;
@@ -63,21 +63,14 @@ export default function TangoGame({ meta, onExit }: GameProps) {
     hint.reset();
   }, [hint]);
 
-  // Reveal the correct symbol for one still-empty cell.
+  // Reveal one deducible cell, and explain why it must be that symbol.
   const useHint = useCallback(() => {
     if (!hint.ready || solvedRef.current) return;
-    const vals = valuesRef.current;
-    let target = -1;
-    for (let i = 0; i < vals.length; i++) {
-      if (vals[i] === -1 && puzzle.given[i] < 0) {
-        target = i;
-        break;
-      }
-    }
-    if (target === -1) return;
+    const suggestion = tangoHint(valuesRef.current, puzzle);
+    if (!suggestion) return;
 
-    setHintCell(target);
-    setHintMsg(`The glowing cell is a ${puzzle.solution[target] === 0 ? 'sun' : 'moon'}.`);
+    setHintCell(suggestion.cell);
+    setHintMsg(suggestion.reason);
     setHintUsed(true);
     hintUsedRef.current = true;
     hint.use();

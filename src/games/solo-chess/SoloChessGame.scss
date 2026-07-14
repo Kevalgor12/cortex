@@ -163,10 +163,12 @@
   }
 
   &__hint-msg {
-    min-height: 1.3em;
-    margin-top: 16px;
+    min-height: 2.8em;
+    max-width: 340px;
+    margin: 16px auto 0;
     font-size: 0.9rem;
     font-weight: 600;
+    line-height: 1.35;
     color: var(--warning);
     text-align: center;
     opacity: 0;
