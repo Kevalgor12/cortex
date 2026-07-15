@@ -4,6 +4,7 @@ import { readValue, writeValue } from '../../lib/storage';
 import Button from '../../components/Button/Button';
 import Confetti from '../../components/Confetti/Confetti';
 import HintButton from '../../components/HintButton/HintButton';
+import RulesButton from '../../components/RulesButton/RulesButton';
 import { useHintCooldown } from '../../hooks/useHintCooldown';
 import { ArrowLeftIcon, CrownIcon, HomeIcon, RefreshIcon } from '../../components/icons';
 import { createQueensPuzzle, evaluateQueens, queensHint, type QueensPuzzle } from './queens';
@@ -170,6 +171,20 @@ export default function QueensGame({ meta, onExit }: GameProps) {
   const queenCount = marks.filter((m) => m === 2).length;
   const accent = { ['--accent' as string]: meta.accent };
 
+  // Thick line where a cell meets a different colour region, thin within one.
+  // Only top/left are drawn per cell (each shared edge once); the outer frame
+  // is the grid's own border.
+  const regionBorder = (i: number) => {
+    const r = Math.floor(i / size);
+    const c = i % size;
+    const edge = (different: boolean) =>
+      different ? '2px solid var(--q-line-strong)' : '1px solid var(--q-line-soft)';
+    return {
+      borderTop: r === 0 ? 'none' : edge(regions[i - size] !== regions[i]),
+      borderLeft: c === 0 ? 'none' : edge(regions[i - 1] !== regions[i]),
+    };
+  };
+
   return (
     <div className="queens" style={accent}>
       <header className="queens__bar container">
@@ -177,6 +192,7 @@ export default function QueensGame({ meta, onExit }: GameProps) {
           <ArrowLeftIcon />
         </button>
         <div className="queens__title">{meta.name}</div>
+        <RulesButton title={meta.name} rules={meta.howTo} />
         <span className="queens__timer">{formatTime(elapsed)}</span>
       </header>
 
@@ -224,7 +240,7 @@ export default function QueensGame({ meta, onExit }: GameProps) {
                   <button
                     key={i}
                     className={`queens__cell${conflict ? ' is-conflict' : ''}${hintCell === i ? ' is-hint' : ''}`}
-                    style={{ background: REGION_COLORS[region % REGION_COLORS.length] }}
+                    style={{ background: REGION_COLORS[region % REGION_COLORS.length], ...regionBorder(i) }}
                     onClick={() => tap(i)}
                     aria-label={`Cell ${i + 1}`}
                   >

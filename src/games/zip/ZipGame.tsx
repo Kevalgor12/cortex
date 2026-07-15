@@ -5,6 +5,7 @@ import { readValue, writeValue } from '../../lib/storage';
 import Button from '../../components/Button/Button';
 import Confetti from '../../components/Confetti/Confetti';
 import HintButton from '../../components/HintButton/HintButton';
+import RulesButton from '../../components/RulesButton/RulesButton';
 import { useHintCooldown } from '../../hooks/useHintCooldown';
 import { ArrowLeftIcon, HomeIcon, RefreshIcon } from '../../components/icons';
 import { areAdjacent, createZipPuzzle, isSolved, zipHint, type ZipPuzzle } from './zip';
@@ -170,6 +171,7 @@ export default function ZipGame({ meta, onExit }: GameProps) {
           <ArrowLeftIcon />
         </button>
         <div className="zip__title">{meta.name}</div>
+        <RulesButton title={meta.name} rules={meta.howTo} />
         <span className="zip__timer">{formatTime(elapsed)}</span>
       </header>
 

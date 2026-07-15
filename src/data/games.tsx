@@ -128,9 +128,10 @@ export const GAMES: GameMeta[] = [
     accent: '#a855f7',
     icon: CrownIcon,
     howTo: [
-      'Place one crown in each row, column and colour region.',
+      'Place exactly one crown in every row, column and colour region.',
       'No two crowns may touch — not even diagonally.',
-      'Tap once to mark a spot, twice for a crown, again to clear.',
+      'Placing a crown auto-marks the squares it rules out.',
+      'Tap a square to mark it, again for a crown, again to clear.',
     ],
     available: true,
     component: QueensGame,

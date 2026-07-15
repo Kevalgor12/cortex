@@ -4,6 +4,7 @@ import { readValue, writeValue } from '../../lib/storage';
 import Button from '../../components/Button/Button';
 import Confetti from '../../components/Confetti/Confetti';
 import HintButton from '../../components/HintButton/HintButton';
+import RulesButton from '../../components/RulesButton/RulesButton';
 import { useHintCooldown } from '../../hooks/useHintCooldown';
 import { ArrowLeftIcon, HomeIcon, RefreshIcon } from '../../components/icons';
 import {
@@ -179,6 +180,7 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
           <ArrowLeftIcon />
         </button>
         <div className="chess__title">{meta.name}</div>
+        <RulesButton title={meta.name} rules={meta.howTo} />
         <span className="chess__timer">{formatTime(elapsed)}</span>
       </header>
 

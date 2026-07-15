@@ -4,6 +4,7 @@ import { readValue, writeValue } from '../../lib/storage';
 import Button from '../../components/Button/Button';
 import Confetti from '../../components/Confetti/Confetti';
 import HintButton from '../../components/HintButton/HintButton';
+import RulesButton from '../../components/RulesButton/RulesButton';
 import { useHintCooldown } from '../../hooks/useHintCooldown';
 import { ArrowLeftIcon, HomeIcon, MoonIcon, RefreshIcon, SunIcon } from '../../components/icons';
 import { createTangoPuzzle, evaluateTango, tangoHint, type TangoPuzzle } from './tango';
@@ -127,6 +128,7 @@ export default function TangoGame({ meta, onExit }: GameProps) {
           <ArrowLeftIcon />
         </button>
         <div className="tango__title">{meta.name}</div>
+        <RulesButton title={meta.name} rules={meta.howTo} />
         <span className="tango__timer">{formatTime(elapsed)}</span>
       </header>
 

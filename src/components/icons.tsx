@@ -210,6 +210,16 @@ export function CheckIcon({ className }: IconProps) {
   );
 }
 
+export function HelpIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M9.6 9.2a2.4 2.4 0 1 1 3.4 2.3c-.8.4-1.1 1-1.1 1.8" />
+      <circle cx="12" cy="16.6" r="0.7" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 export function BulbIcon({ className }: IconProps) {
   return (
     <svg {...base} className={className} aria-hidden="true">
