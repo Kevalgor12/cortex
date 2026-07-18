@@ -1,22 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+
 import type { GameProps } from '../../types/game';
+
 import { readValue, writeValue } from '../../lib/storage';
-import Button from '../../components/Button/Button';
-import Confetti from '../../components/Confetti/Confetti';
-import HintButton from '../../components/HintButton/HintButton';
-import RulesButton from '../../components/RulesButton/RulesButton';
-import { useHintCooldown } from '../../hooks/useHintCooldown';
-import { ArrowLeftIcon, HomeIcon, MoonIcon, RefreshIcon, SunIcon } from '../../components/icons';
+
 import { createTangoPuzzle, evaluateTango, tangoHint, type TangoPuzzle } from './tango';
+import Button from '../../components/Button/Button';
+import HintButton from '../../components/HintButton/HintButton';
+import { MoonIcon, RefreshIcon, SunIcon } from '../../components/icons';
+import PuzzleBar from '../../components/PuzzleBar/PuzzleBar';
+import PuzzleResult from '../../components/PuzzleResult/PuzzleResult';
+import { useHintCooldown } from '../../hooks/useHintCooldown';
 import './TangoGame.scss';
 
 const SIZE = 6;
 const BEST_KEY = 'tango:best';
-
-function formatTime(ms: number): string {
-  const total = Math.floor(ms / 1000);
-  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
-}
 
 export default function TangoGame({ meta, onExit }: GameProps) {
   const [puzzle, setPuzzle] = useState<TangoPuzzle>(() => createTangoPuzzle(SIZE));
@@ -123,37 +121,18 @@ export default function TangoGame({ meta, onExit }: GameProps) {
 
   return (
     <div className="tango" style={accent}>
-      <header className="tango__bar container">
-        <button className="tango__back" onClick={onExit} aria-label="Back to home">
-          <ArrowLeftIcon />
-        </button>
-        <div className="tango__title">{meta.name}</div>
-        <RulesButton title={meta.name} rules={meta.howTo} />
-        <span className="tango__timer">{formatTime(elapsed)}</span>
-      </header>
+      <PuzzleBar title={meta.name} rules={meta.howTo} elapsedMs={elapsed} onExit={onExit} />
 
       <main className="tango__body container">
         {solved ? (
-          <div className="tango__result">
-            <Confetti />
-            <p className="tango__result-eyebrow">Solved</p>
-            <div className="tango__result-time">{formatTime(elapsed)}</div>
-            {isBest && <p className="tango__result-best">New best time!</p>}
-            {hintUsed && <p className="tango__result-detail">Solved with a hint</p>}
-            {!isBest && !hintUsed && best !== null && (
-              <p className="tango__result-detail">Best: {formatTime(best)}</p>
-            )}
-            <div className="tango__actions">
-              <Button variant="primary" size="lg" block onClick={newGame}>
-                <RefreshIcon />
-                New puzzle
-              </Button>
-              <Button variant="ghost" size="lg" block onClick={onExit}>
-                <HomeIcon />
-                Home
-              </Button>
-            </div>
-          </div>
+          <PuzzleResult
+            elapsedMs={elapsed}
+            bestMs={best}
+            isBest={isBest}
+            hintUsed={hintUsed}
+            onNew={newGame}
+            onExit={onExit}
+          />
         ) : (
           <>
             <p className="tango__hint">

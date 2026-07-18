@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
 import type { GameProps } from '../../types/game';
+
 import { readValue, writeValue } from '../../lib/storage';
-import Button from '../../components/Button/Button';
-import Confetti from '../../components/Confetti/Confetti';
-import HintButton from '../../components/HintButton/HintButton';
-import RulesButton from '../../components/RulesButton/RulesButton';
-import { useHintCooldown } from '../../hooks/useHintCooldown';
-import { ArrowLeftIcon, CrownIcon, HomeIcon, RefreshIcon } from '../../components/icons';
+
 import { createQueensPuzzle, evaluateQueens, queensHint, type QueensPuzzle } from './queens';
+import Button from '../../components/Button/Button';
+import HintButton from '../../components/HintButton/HintButton';
+import { CrownIcon, RefreshIcon } from '../../components/icons';
+import PuzzleBar from '../../components/PuzzleBar/PuzzleBar';
+import PuzzleResult from '../../components/PuzzleResult/PuzzleResult';
+import { useHintCooldown } from '../../hooks/useHintCooldown';
 import './QueensGame.scss';
 
 const SIZE = 8;
@@ -25,11 +28,6 @@ const REGION_COLORS = [
   '#f2a8cd', // pink
   '#aeb8cc', // slate
 ];
-
-function formatTime(ms: number): string {
-  const total = Math.floor(ms / 1000);
-  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
-}
 
 // Marks: 0 = empty, 1 = X note, 2 = queen.
 export default function QueensGame({ meta, onExit }: GameProps) {
@@ -187,37 +185,18 @@ export default function QueensGame({ meta, onExit }: GameProps) {
 
   return (
     <div className="queens" style={accent}>
-      <header className="queens__bar container">
-        <button className="queens__back" onClick={onExit} aria-label="Back to home">
-          <ArrowLeftIcon />
-        </button>
-        <div className="queens__title">{meta.name}</div>
-        <RulesButton title={meta.name} rules={meta.howTo} />
-        <span className="queens__timer">{formatTime(elapsed)}</span>
-      </header>
+      <PuzzleBar title={meta.name} rules={meta.howTo} elapsedMs={elapsed} onExit={onExit} />
 
       <main className="queens__body container">
         {solved ? (
-          <div className="queens__result">
-            <Confetti />
-            <p className="queens__result-eyebrow">Solved</p>
-            <div className="queens__result-time">{formatTime(elapsed)}</div>
-            {isBest && <p className="queens__result-best">New best time!</p>}
-            {hintUsed && <p className="queens__result-detail">Solved with a hint</p>}
-            {!isBest && !hintUsed && best !== null && (
-              <p className="queens__result-detail">Best: {formatTime(best)}</p>
-            )}
-            <div className="queens__actions">
-              <Button variant="primary" size="lg" block onClick={newGame}>
-                <RefreshIcon />
-                New puzzle
-              </Button>
-              <Button variant="ghost" size="lg" block onClick={onExit}>
-                <HomeIcon />
-                Home
-              </Button>
-            </div>
-          </div>
+          <PuzzleResult
+            elapsedMs={elapsed}
+            bestMs={best}
+            isBest={isBest}
+            hintUsed={hintUsed}
+            onNew={newGame}
+            onExit={onExit}
+          />
         ) : (
           <>
             <p className="queens__hint">

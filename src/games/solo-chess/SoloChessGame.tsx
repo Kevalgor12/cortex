@@ -1,12 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+
 import type { GameProps } from '../../types/game';
+
 import { readValue, writeValue } from '../../lib/storage';
-import Button from '../../components/Button/Button';
-import Confetti from '../../components/Confetti/Confetti';
-import HintButton from '../../components/HintButton/HintButton';
-import RulesButton from '../../components/RulesButton/RulesButton';
-import { useHintCooldown } from '../../hooks/useHintCooldown';
-import { ArrowLeftIcon, HomeIcon, RefreshIcon } from '../../components/icons';
+
 import {
   captureTargets,
   countPieces,
@@ -16,6 +13,12 @@ import {
   type Board,
   type PieceType,
 } from './soloChess';
+import Button from '../../components/Button/Button';
+import HintButton from '../../components/HintButton/HintButton';
+import { RefreshIcon } from '../../components/icons';
+import PuzzleBar from '../../components/PuzzleBar/PuzzleBar';
+import PuzzleResult from '../../components/PuzzleResult/PuzzleResult';
+import { useHintCooldown } from '../../hooks/useHintCooldown';
 import './SoloChessGame.scss';
 
 const SIZE = 6;
@@ -28,11 +31,6 @@ const GLYPH: Record<PieceType, string> = {
   bishop: '♝',
   knight: '♞',
 };
-
-function formatTime(ms: number): string {
-  const total = Math.floor(ms / 1000);
-  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
-}
 
 const clone = (board: Board): Board => board.map((p) => (p ? { ...p } : null));
 
@@ -175,37 +173,18 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
 
   return (
     <div className="chess" style={accent}>
-      <header className="chess__bar container">
-        <button className="chess__back" onClick={onExit} aria-label="Back to home">
-          <ArrowLeftIcon />
-        </button>
-        <div className="chess__title">{meta.name}</div>
-        <RulesButton title={meta.name} rules={meta.howTo} />
-        <span className="chess__timer">{formatTime(elapsed)}</span>
-      </header>
+      <PuzzleBar title={meta.name} rules={meta.howTo} elapsedMs={elapsed} onExit={onExit} />
 
       <main className="chess__body container">
         {solved ? (
-          <div className="chess__result">
-            <Confetti />
-            <p className="chess__result-eyebrow">Solved</p>
-            <div className="chess__result-time">{formatTime(elapsed)}</div>
-            {isBest && <p className="chess__result-best">New best time!</p>}
-            {hintUsed && <p className="chess__result-detail">Solved with a hint</p>}
-            {!isBest && !hintUsed && best !== null && (
-              <p className="chess__result-detail">Best: {formatTime(best)}</p>
-            )}
-            <div className="chess__actions">
-              <Button variant="primary" size="lg" block onClick={newGame}>
-                <RefreshIcon />
-                New puzzle
-              </Button>
-              <Button variant="ghost" size="lg" block onClick={onExit}>
-                <HomeIcon />
-                Home
-              </Button>
-            </div>
-          </div>
+          <PuzzleResult
+            elapsedMs={elapsed}
+            bestMs={best}
+            isBest={isBest}
+            hintUsed={hintUsed}
+            onNew={newGame}
+            onExit={onExit}
+          />
         ) : (
           <>
             <p className="chess__hint">

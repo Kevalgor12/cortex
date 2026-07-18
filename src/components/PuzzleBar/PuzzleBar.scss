@@ -1,0 +1,44 @@
+.puzzle-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 22px;
+
+  &__back {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    transition: color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+    &:hover {
+      color: var(--text);
+      background: var(--surface-2);
+      transform: translateX(-2px);
+    }
+  }
+
+  &__title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-right: auto;
+  }
+
+  &__timer {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.95rem;
+  }
+}

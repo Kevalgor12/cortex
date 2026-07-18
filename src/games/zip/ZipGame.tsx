@@ -1,23 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { PointerEvent as ReactPointerEvent } from 'react';
+
 import type { GameProps } from '../../types/game';
+import type { PointerEvent as ReactPointerEvent } from 'react';
+
 import { readValue, writeValue } from '../../lib/storage';
-import Button from '../../components/Button/Button';
-import Confetti from '../../components/Confetti/Confetti';
-import HintButton from '../../components/HintButton/HintButton';
-import RulesButton from '../../components/RulesButton/RulesButton';
-import { useHintCooldown } from '../../hooks/useHintCooldown';
-import { ArrowLeftIcon, HomeIcon, RefreshIcon } from '../../components/icons';
+
 import { areAdjacent, createZipPuzzle, isSolved, zipHint, type ZipPuzzle } from './zip';
+import Button from '../../components/Button/Button';
+import HintButton from '../../components/HintButton/HintButton';
+import { RefreshIcon } from '../../components/icons';
+import PuzzleBar from '../../components/PuzzleBar/PuzzleBar';
+import PuzzleResult from '../../components/PuzzleResult/PuzzleResult';
+import { useHintCooldown } from '../../hooks/useHintCooldown';
 import './ZipGame.scss';
 
 const SIZE = 6;
 const BEST_KEY = 'zip:best';
-
-function formatTime(ms: number): string {
-  const total = Math.floor(ms / 1000);
-  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
-}
 
 export default function ZipGame({ meta, onExit }: GameProps) {
   const [puzzle, setPuzzle] = useState<ZipPuzzle>(() => createZipPuzzle(SIZE));
@@ -166,37 +164,18 @@ export default function ZipGame({ meta, onExit }: GameProps) {
 
   return (
     <div className="zip" style={accent}>
-      <header className="zip__bar container">
-        <button className="zip__back" onClick={onExit} aria-label="Back to home">
-          <ArrowLeftIcon />
-        </button>
-        <div className="zip__title">{meta.name}</div>
-        <RulesButton title={meta.name} rules={meta.howTo} />
-        <span className="zip__timer">{formatTime(elapsed)}</span>
-      </header>
+      <PuzzleBar title={meta.name} rules={meta.howTo} elapsedMs={elapsed} onExit={onExit} />
 
       <main className="zip__body container">
         {solved ? (
-          <div className="zip__result">
-            <Confetti />
-            <p className="zip__result-eyebrow">Solved</p>
-            <div className="zip__result-time">{formatTime(elapsed)}</div>
-            {isBest && <p className="zip__result-best">New best time!</p>}
-            {hintUsed && <p className="zip__result-detail">Solved with a hint</p>}
-            {!isBest && !hintUsed && best !== null && (
-              <p className="zip__result-detail">Best: {formatTime(best)}</p>
-            )}
-            <div className="zip__actions">
-              <Button variant="primary" size="lg" block onClick={newGame}>
-                <RefreshIcon />
-                New puzzle
-              </Button>
-              <Button variant="ghost" size="lg" block onClick={onExit}>
-                <HomeIcon />
-                Home
-              </Button>
-            </div>
-          </div>
+          <PuzzleResult
+            elapsedMs={elapsed}
+            bestMs={best}
+            isBest={isBest}
+            hintUsed={hintUsed}
+            onNew={newGame}
+            onExit={onExit}
+          />
         ) : (
           <>
             <p className="zip__hint">

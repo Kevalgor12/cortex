@@ -1,0 +1,48 @@
+.puzzle-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 380px;
+  animation: rise-in 0.4s ease-out;
+
+  &__eyebrow {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+  }
+
+  &__time {
+    font-size: 3.4rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-top: 8px;
+    font-variant-numeric: tabular-nums;
+    animation: pop-in 0.5s ease-out 0.1s backwards;
+  }
+
+  &__best {
+    margin-top: 12px;
+    font-weight: 700;
+    color: var(--warning);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.9rem;
+  }
+
+  &__detail {
+    margin-top: 10px;
+    color: var(--text-muted);
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin-top: 28px;
+  }
+}
