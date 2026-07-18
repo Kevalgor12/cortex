@@ -13,17 +13,17 @@ import './QueensGame.scss';
 const SIZE = 8;
 const BEST_KEY = 'queens:best';
 
-// One distinct colour per region.
+// One distinct colour per region — soft LinkedIn-style pastels.
 const REGION_COLORS = [
-  '#818cf8',
-  '#fb7185',
-  '#34d399',
-  '#fbbf24',
-  '#c084fc',
-  '#38bdf8',
-  '#f472b6',
-  '#a3e635',
-  '#fb923c',
+  '#b8a6e6', // lavender
+  '#a8d38b', // sage green
+  '#f6bd7a', // peach
+  '#9ac3ef', // sky blue
+  '#f4917e', // coral
+  '#dbe07a', // lime
+  '#c6b49a', // taupe
+  '#f2a8cd', // pink
+  '#aeb8cc', // slate
 ];
 
 function formatTime(ms: number): string {
