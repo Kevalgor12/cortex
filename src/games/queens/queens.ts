@@ -244,7 +244,7 @@ export function evaluateQueens(queenCells: number[], puzzle: QueensPuzzle): Quee
   return { solved: queenCells.length === size && conflicts.size === 0, conflicts };
 }
 
-export interface QueensHint {
+interface QueensHint {
   cell: number;
   reason: string;
 }

@@ -209,7 +209,7 @@ export function evaluateTango(values: number[], puzzle: TangoPuzzle): TangoEval 
   return { solved: filled && violations.size === 0, violations };
 }
 
-export interface TangoHint {
+interface TangoHint {
   cell: number;
   value: number;
   reason: string;

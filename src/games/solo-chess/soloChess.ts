@@ -168,8 +168,8 @@ export function createSoloChessPuzzle(size = 6, pieceCount = 7): SoloChessPuzzle
   return { size, board };
 }
 
-// Forward search used to verify a board is solvable (for tests).
-export function isSolvable(board: Board, size: number): boolean {
+// Forward search that checks whether a board can still be reduced to one piece.
+function isSolvable(board: Board, size: number): boolean {
   const start = board.map((p) => (p ? { ...p } : null));
   const seen = new Set<string>();
   const key = (b: Board) => b.map((p) => (p ? p.type[0] + p.moves : '.')).join('');
@@ -210,7 +210,7 @@ const PIECE_NAME: Record<PieceType, string> = {
   knight: 'knight',
 };
 
-export interface SoloHint {
+interface SoloHint {
   from: number;
   to: number;
   reason: string;

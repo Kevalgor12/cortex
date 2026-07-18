@@ -113,7 +113,7 @@ export function isSolved(path: number[], puzzle: ZipPuzzle): boolean {
   return expected === count + 1;
 }
 
-export interface ZipHint {
+interface ZipHint {
   cell: number;
   reason: string;
 }
