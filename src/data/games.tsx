@@ -30,7 +30,7 @@ export const GAMES: GameMeta[] = [
     tagline: 'Spot the rule, predict what comes next',
     description: 'A sequence follows a hidden rule. Read it fast and pick the tile that continues it.',
     skill: 'Reasoning',
-    accent: '#6366f1',
+    accent: '#818cf8',
     icon: PatternIcon,
     howTo: [
       'Study how the tiles change across the sequence.',

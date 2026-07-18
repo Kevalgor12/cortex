@@ -12,7 +12,8 @@
   // Text
   --text: #f3f5fb;
   --text-muted: #9aa4b6;
-  --text-faint: #626d82;
+  // Lightened to clear 4.5:1 on the dark surfaces (was #626d82 ~3.1:1).
+  --text-faint: #858fa2;
 
   // Accents
   --primary: #6366f1;

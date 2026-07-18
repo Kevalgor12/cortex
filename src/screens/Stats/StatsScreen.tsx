@@ -32,6 +32,7 @@ export default function StatsScreen({ onExit }: StatsScreenProps) {
         <h1 className="stats__title">Your Stats</h1>
       </header>
 
+      <main>
       <section className="stats__summary">
         {summary.map((item) => (
           <div className="stats__tile" key={item.label}>
@@ -81,6 +82,7 @@ export default function StatsScreen({ onExit }: StatsScreenProps) {
           );
         })}
       </section>
+      </main>
     </div>
   );
 }

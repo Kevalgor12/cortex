@@ -25,7 +25,13 @@ export default function RulesButton({ title, rules }: RulesButtonProps) {
       </button>
 
       {open && (
-        <div className="rules-modal" role="dialog" aria-modal="true" onClick={() => setOpen(false)}>
+        <div
+          className="rules-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`How to play: ${title}`}
+          onClick={() => setOpen(false)}
+        >
           <div className="rules-modal__card" onClick={(e) => e.stopPropagation()}>
             <div className="rules-modal__head">
               <span className="rules-modal__title">How to play · {title}</span>

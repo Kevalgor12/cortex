@@ -29,6 +29,7 @@ export default function Home({ games, onSelect, onOpenStats, onOpenDaily }: Home
         </button>
       </header>
 
+      <main>
       <div className="home__hero">
         <h1 className="home__headline">
           Train your brain in <span>five minutes</span>.
@@ -68,6 +69,7 @@ export default function Home({ games, onSelect, onOpenStats, onOpenDaily }: Home
       </section>
 
       <footer className="home__footer">More games unlock as the collection grows.</footer>
+      </main>
     </div>
   );
 }

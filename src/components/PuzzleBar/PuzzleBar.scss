@@ -35,7 +35,7 @@
   &__timer {
     font-weight: 700;
     font-variant-numeric: tabular-nums;
-    color: var(--accent);
+    color: color-mix(in srgb, var(--accent) 75%, white);
     background: color-mix(in srgb, var(--accent) 14%, transparent);
     padding: 6px 12px;
     border-radius: 999px;

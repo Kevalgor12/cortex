@@ -263,6 +263,7 @@ function RoundView({
               className={`daily__option ${optionClass(i)}`.trim()}
               onClick={() => onPick(i)}
               disabled={revealing}
+              aria-label={`Option ${i + 1}`}
             >
               <PatternCell cell={cell} />
             </button>

@@ -174,7 +174,8 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: var(--accent);
+    // Lightened so mid-tone accents clear 4.5:1 on the tinted pill.
+    color: color-mix(in srgb, var(--accent) 75%, white);
     background: color-mix(in srgb, var(--accent) 16%, transparent);
     padding: 5px 10px;
     border-radius: 999px;

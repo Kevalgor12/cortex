@@ -56,7 +56,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: var(--accent);
+    color: color-mix(in srgb, var(--accent) 75%, white);
     background: color-mix(in srgb, var(--accent) 16%, transparent);
     padding: 5px 10px;
     border-radius: 999px;
