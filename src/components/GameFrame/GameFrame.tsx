@@ -1,12 +1,13 @@
-import type { ReactNode } from 'react';
-import type { GameMeta } from '../../types/game';
-import type { GameStatus } from '../../engine/useGameSession';
 import type { Achievement } from '../../data/achievements';
+import type { GameStatus } from '../../engine/useGameSession';
+import type { GameMeta } from '../../types/game';
+import type { ReactNode } from 'react';
+
+import GameOver from '../../screens/GameOver/GameOver';
 import Button from '../Button/Button';
 import GameHud from '../GameHud/GameHud';
-import TimerBar from '../TimerBar/TimerBar';
-import GameOver from '../../screens/GameOver/GameOver';
 import { ArrowLeftIcon } from '../icons';
+import TimerBar from '../TimerBar/TimerBar';
 import './GameFrame.scss';
 
 interface GameFrameProps {

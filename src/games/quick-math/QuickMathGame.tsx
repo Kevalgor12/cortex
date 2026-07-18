@@ -1,8 +1,9 @@
-import type { GameProps } from '../../types/game';
 import type { DifficultyConfig } from '../../engine/difficulty';
-import { useChallengeGame } from '../../engine/useChallengeGame';
-import GameFrame from '../../components/GameFrame/GameFrame';
+import type { GameProps } from '../../types/game';
+
 import { createMathChallenge, type MathChallenge } from './math';
+import GameFrame from '../../components/GameFrame/GameFrame';
+import { useChallengeGame } from '../../engine/useChallengeGame';
 import './QuickMathGame.scss';
 
 // Mental arithmetic is quick, so the clock is tighter and levels come faster.

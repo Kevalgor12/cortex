@@ -1,9 +1,11 @@
 import { useState } from 'react';
+
 import type { GameId } from './types/game';
+
 import { GAMES } from './data/games';
+import DailyChallenge from './screens/Daily/DailyChallenge';
 import Home from './screens/Home/Home';
 import StatsScreen from './screens/Stats/StatsScreen';
-import DailyChallenge from './screens/Daily/DailyChallenge';
 
 type View = 'home' | 'stats' | 'daily' | GameId;
 

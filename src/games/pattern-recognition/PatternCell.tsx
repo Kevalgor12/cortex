@@ -1,4 +1,5 @@
 import type { Cell } from './patterns';
+
 import { PATTERN_COLORS } from './patterns';
 
 // Renders a single pattern cell as an SVG glyph. Rotation is applied to the

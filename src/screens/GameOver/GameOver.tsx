@@ -1,8 +1,9 @@
 import type { Achievement } from '../../data/achievements';
-import { useCountUp } from '../../hooks/useCountUp';
+
 import Button from '../../components/Button/Button';
 import Confetti from '../../components/Confetti/Confetti';
 import { HomeIcon, RefreshIcon, SparkleIcon, TrophyIcon } from '../../components/icons';
+import { useCountUp } from '../../hooks/useCountUp';
 import './GameOver.scss';
 
 interface GameOverProps {

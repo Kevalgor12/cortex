@@ -1,4 +1,5 @@
 import type { GameId } from '../types/game';
+
 import { readValue, writeValue } from './storage';
 
 // All persistent play statistics live in one namespaced object. Everything the

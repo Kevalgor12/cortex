@@ -1,8 +1,9 @@
-import type { GameProps } from '../../types/game';
 import type { DifficultyConfig } from '../../engine/difficulty';
-import { useChallengeGame } from '../../engine/useChallengeGame';
-import GameFrame from '../../components/GameFrame/GameFrame';
+import type { GameProps } from '../../types/game';
+
 import { createLogicChallenge, type LogicChallenge } from './series';
+import GameFrame from '../../components/GameFrame/GameFrame';
+import { useChallengeGame } from '../../engine/useChallengeGame';
 import './LogicChallengeGame.scss';
 
 // Logic needs more thinking time than mental math, so the clock is roomier.

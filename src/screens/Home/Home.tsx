@@ -1,5 +1,7 @@
 import type { GameId, GameMeta } from '../../types/game';
+
 import { isDoneToday, readDaily } from '../../lib/daily';
+
 import { BrainIcon, CalendarIcon, ChartIcon, CheckIcon, FlameIcon, LockIcon } from '../../components/icons';
 import './Home.scss';
 

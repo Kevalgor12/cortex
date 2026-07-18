@@ -1,8 +1,9 @@
-import type { GameProps } from '../../types/game';
 import type { DifficultyConfig } from '../../engine/difficulty';
-import { useChallengeGame } from '../../engine/useChallengeGame';
-import GameFrame from '../../components/GameFrame/GameFrame';
+import type { GameProps } from '../../types/game';
+
 import { createOddChallenge, type OddChallenge } from './odd';
+import GameFrame from '../../components/GameFrame/GameFrame';
+import { useChallengeGame } from '../../engine/useChallengeGame';
 import './OddOneOutGame.scss';
 
 const DIFFICULTY: DifficultyConfig = {

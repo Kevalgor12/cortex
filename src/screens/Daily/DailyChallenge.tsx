@@ -1,15 +1,17 @@
 import { useMemo, useRef, useState } from 'react';
-import { useCountUp } from '../../hooks/useCountUp';
-import { withSeededRandom } from '../../lib/rng';
+
 import { completeDaily, dateSeed, isDoneToday, readDaily, todayKey, type DailyState } from '../../lib/daily';
-import { createPatternChallenge, type PatternChallenge } from '../../games/pattern-recognition/patterns';
-import PatternCell from '../../games/pattern-recognition/PatternCell';
-import { createMathChallenge, type MathChallenge } from '../../games/quick-math/math';
-import { createLogicChallenge, type LogicChallenge } from '../../games/logic/series';
-import { createOddChallenge, type OddChallenge } from '../../games/odd-one-out/odd';
+import { withSeededRandom } from '../../lib/rng';
+
 import Button from '../../components/Button/Button';
 import Confetti from '../../components/Confetti/Confetti';
 import { ArrowLeftIcon, CalendarIcon, CheckIcon, FlameIcon, HomeIcon } from '../../components/icons';
+import { createLogicChallenge, type LogicChallenge } from '../../games/logic/series';
+import { createOddChallenge, type OddChallenge } from '../../games/odd-one-out/odd';
+import PatternCell from '../../games/pattern-recognition/PatternCell';
+import { createPatternChallenge, type PatternChallenge } from '../../games/pattern-recognition/patterns';
+import { createMathChallenge, type MathChallenge } from '../../games/quick-math/math';
+import { useCountUp } from '../../hooks/useCountUp';
 import './DailyChallenge.scss';
 
 const POINTS_PER_CORRECT = 100;

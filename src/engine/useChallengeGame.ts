@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { STARTING_LIVES, useGameSession } from './useGameSession';
-import { scoreRound } from './scoring';
+
+import type { GameId } from '../types/game';
+
 import { levelForRound, timeForLevel, type DifficultyConfig } from './difficulty';
+import { scoreRound } from './scoring';
+import { STARTING_LIVES, useGameSession } from './useGameSession';
 import { useCountdown } from '../hooks/useCountdown';
 import { useRunRecorder } from '../hooks/useRunRecorder';
-import type { GameId } from '../types/game';
+
 
 export type ChallengePhase = 'answer' | 'reveal';
 

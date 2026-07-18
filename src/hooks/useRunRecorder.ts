@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import type { GameId } from '../types/game';
-import type { SessionState } from '../engine/useGameSession';
-import { getGameStat, recordRun } from '../lib/stats';
-import { syncAchievements } from '../lib/achievements';
+
 import type { Achievement } from '../data/achievements';
+import type { SessionState } from '../engine/useGameSession';
+import type { GameId } from '../types/game';
+
+import { syncAchievements } from '../lib/achievements';
+import { getGameStat, recordRun } from '../lib/stats';
+
 
 /**
  * Watches a game's session and, the moment a run ends, folds the result into

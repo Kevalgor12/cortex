@@ -1,6 +1,6 @@
-import { ACHIEVEMENTS, type Achievement } from '../data/achievements';
 import { globalStats, type StatsByGame } from './stats';
 import { readValue, writeValue } from './storage';
+import { ACHIEVEMENTS, type Achievement } from '../data/achievements';
 
 const KEY = 'achievements';
 

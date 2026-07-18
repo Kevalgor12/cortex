@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
 import type { GameProps } from '../../types/game';
-import { STARTING_LIVES, useGameSession } from '../../engine/useGameSession';
+
+import { createBoard, memorizeDuration, recallDuration, type MemoryBoard } from './board';
+import GameFrame from '../../components/GameFrame/GameFrame';
 import { scoreRound } from '../../engine/scoring';
+import { STARTING_LIVES, useGameSession } from '../../engine/useGameSession';
 import { useCountdown } from '../../hooks/useCountdown';
 import { useRunRecorder } from '../../hooks/useRunRecorder';
-import GameFrame from '../../components/GameFrame/GameFrame';
-import { createBoard, memorizeDuration, recallDuration, type MemoryBoard } from './board';
 import './VisualMemoryGame.scss';
 
 const MAX_LEVEL = 16;

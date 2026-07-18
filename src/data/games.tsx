@@ -1,4 +1,5 @@
 import type { GameMeta } from '../types/game';
+
 import {
   ChessIcon,
   CrownIcon,
@@ -10,15 +11,15 @@ import {
   SunIcon,
   ZipIcon,
 } from '../components/icons';
-import PatternRecognitionGame from '../games/pattern-recognition/PatternRecognitionGame';
-import QuickMathGame from '../games/quick-math/QuickMathGame';
-import VisualMemoryGame from '../games/visual-memory/VisualMemoryGame';
 import LogicChallengeGame from '../games/logic/LogicChallengeGame';
 import OddOneOutGame from '../games/odd-one-out/OddOneOutGame';
-import ZipGame from '../games/zip/ZipGame';
+import PatternRecognitionGame from '../games/pattern-recognition/PatternRecognitionGame';
 import QueensGame from '../games/queens/QueensGame';
-import TangoGame from '../games/tango/TangoGame';
+import QuickMathGame from '../games/quick-math/QuickMathGame';
 import SoloChessGame from '../games/solo-chess/SoloChessGame';
+import TangoGame from '../games/tango/TangoGame';
+import VisualMemoryGame from '../games/visual-memory/VisualMemoryGame';
+import ZipGame from '../games/zip/ZipGame';
 
 // The full roster. Games without `available: true` are shown as "coming soon"
 // on the home screen and get wired up in later phases.

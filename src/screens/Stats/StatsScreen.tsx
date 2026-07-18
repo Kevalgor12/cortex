@@ -1,8 +1,9 @@
-import { GAMES } from '../../data/games';
-import { ACHIEVEMENTS } from '../../data/achievements';
 import { getUnlockedIds } from '../../lib/achievements';
 import { globalStats, readStats } from '../../lib/stats';
+
 import { ArrowLeftIcon, LockIcon } from '../../components/icons';
+import { ACHIEVEMENTS } from '../../data/achievements';
+import { GAMES } from '../../data/games';
 import './StatsScreen.scss';
 
 interface StatsScreenProps {

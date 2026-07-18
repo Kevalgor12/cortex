@@ -1,5 +1,6 @@
-import type { ComponentType } from 'react';
 import type { GlobalStats } from '../lib/stats';
+import type { ComponentType } from 'react';
+
 import {
   BoltIcon,
   BrainIcon,
