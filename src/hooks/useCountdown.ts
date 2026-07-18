@@ -8,7 +8,7 @@ export interface Countdown {
   isRunning: boolean;
   start: (durationMs: number) => void;
   stop: () => void;
-  /** Live progress read from refs — safe to call inside event handlers. */
+  /** Live progress read from refs - safe to call inside event handlers. */
   getProgress: () => number;
 }
 

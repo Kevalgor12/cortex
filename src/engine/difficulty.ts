@@ -4,7 +4,7 @@
 export interface DifficultyConfig {
   /** Rounds cleared before the level goes up. */
   roundsPerLevel: number;
-  /** Level cap — difficulty plateaus here. */
+  /** Level cap - difficulty plateaus here. */
   maxLevel: number;
   /** Seconds-on-the-clock at level 1, in ms. */
   baseTimeMs: number;

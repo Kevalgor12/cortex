@@ -31,7 +31,7 @@ export function createOddChallenge(level: number): OddChallenge {
   const saturation = rand(55, 72);
   const lightness = rand(46, 60);
 
-  // The lightness gap between the odd tile and the rest — the whole game.
+  // The lightness gap between the odd tile and the rest - the whole game.
   const delta = Math.max(5, 26 - level * 3);
   const sign = Math.random() < 0.5 ? -1 : 1;
   const oddLightness = lightness + sign * delta;

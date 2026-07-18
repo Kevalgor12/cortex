@@ -140,7 +140,7 @@ function Intro({ streak, onStart }: { streak: number; onStart: () => void }) {
       </div>
       <h1 className="daily__intro-title">Today's Challenge</h1>
       <p className="daily__intro-desc">
-        Four quick puzzles, one from each game. Everyone gets the same challenge today — come back
+        Four quick puzzles, one from each game. Everyone gets the same challenge today - come back
         daily to keep your streak alive.
       </p>
       {streak > 0 && (

@@ -133,7 +133,7 @@ export default function VisualMemoryGame({ meta, onExit }: GameProps) {
     phase === 'memorize'
       ? `Memorise ${litTotal} ${litTotal === 1 ? 'tile' : 'tiles'}`
       : phase === 'recall'
-        ? `Your turn — ${found.length}/${litTotal}`
+        ? `Your turn - ${found.length}/${litTotal}`
         : cleared
           ? 'Cleared!'
           : 'Missed some';

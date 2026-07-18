@@ -53,7 +53,7 @@ function randInt(n: number): number {
 }
 
 function randType(): PieceType {
-  // Queens are rare — they trivialise puzzles.
+  // Queens are rare - they trivialise puzzles.
   return (['rook', 'bishop', 'knight', 'rook', 'bishop', 'knight', 'queen'] as PieceType[])[randInt(7)];
 }
 
@@ -161,7 +161,7 @@ export function createSoloChessPuzzle(size = 6, pieceCount = 7): SoloChessPuzzle
     }
   }
 
-  // Fallback — a trivially small board (extremely unlikely to be reached).
+  // Fallback - a trivially small board (extremely unlikely to be reached).
   const board: Board = new Array(size * size).fill(null);
   board[0] = { type: 'rook', moves: 0 };
   board[1] = { type: 'knight', moves: 0 };
@@ -235,7 +235,7 @@ export function soloHint(board: Board, size: number): SoloHint | null {
       );
       const targetName = PIECE_NAME[board[to]!.type];
       const reason = otherCapturers
-        ? `Take the ${targetName} with this ${PIECE_NAME[piece.type]} — it keeps every remaining piece within reach.`
+        ? `Take the ${targetName} with this ${PIECE_NAME[piece.type]} - it keeps every remaining piece within reach.`
         : `Only this ${PIECE_NAME[piece.type]} can take the ${targetName}, so capture it now before it's stranded.`;
       return { from, to, reason };
     }

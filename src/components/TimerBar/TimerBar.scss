@@ -15,17 +15,17 @@
     will-change: transform;
   }
 
-  // Calm — themed to the active game's accent.
+  // Calm - themed to the active game's accent.
   &__fill--calm {
     background: linear-gradient(90deg, var(--accent, var(--primary)), var(--primary-bright));
   }
 
-  // Warning — half the clock gone.
+  // Warning - half the clock gone.
   &__fill--warn {
     background: linear-gradient(90deg, var(--warning), #fbbf24);
   }
 
-  // Danger — nearly out of time.
+  // Danger - nearly out of time.
   &__fill--danger {
     background: linear-gradient(90deg, var(--danger), #fb7185);
     animation: timer-flash 0.7s ease-in-out infinite;

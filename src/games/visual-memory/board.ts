@@ -1,7 +1,7 @@
 // Visual Memory board generator. A board is a square grid with some cells lit.
 // Difficulty grows by lighting more cells (and widening the grid to fit them).
 // The memorise window scales with the number of tiles so bigger boards still
-// get a fair look; the recall window is generous — memory is the challenge,
+// get a fair look; the recall window is generous - memory is the challenge,
 // not raw speed.
 
 export interface MemoryBoard {

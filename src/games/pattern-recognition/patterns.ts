@@ -42,8 +42,8 @@ function mod(n: number, m: number): number {
 
 const isDirectional = (shape: PatternShape) => DIRECTIONAL.includes(shape);
 
-// Two cells look identical when shape and colour match and — for symmetric
-// shapes — rotation is irrelevant. Used to keep options visually distinct.
+// Two cells look identical when shape and colour match and - for symmetric
+// shapes - rotation is irrelevant. Used to keep options visually distinct.
 function visualKey(cell: Cell): string {
   const rot = isDirectional(cell.shape) ? mod(cell.rotation, 360) : 0;
   return `${cell.shape}:${cell.colorIndex}:${rot}`;

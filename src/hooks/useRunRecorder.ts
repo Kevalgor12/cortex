@@ -25,7 +25,7 @@ export function useRunRecorder(gameId: GameId, state: SessionState) {
 
   useEffect(() => {
     if (state.status === 'playing') {
-      // A fresh run — clear last run's celebration flags.
+      // A fresh run - clear last run's celebration flags.
       recordedRef.current = false;
       setIsNewHighScore(false);
       setUnlocked([]);

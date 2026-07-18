@@ -45,7 +45,7 @@ export default function Home({ games, onSelect, onOpenStats, onOpenDaily }: Home
         <span className="daily-card__text">
           <span className="daily-card__title">Daily Challenge</span>
           <span className="daily-card__sub">
-            {dailyDone ? 'Completed today — see your result' : 'Four puzzles. One shot. Same for everyone.'}
+            {dailyDone ? 'Completed today - see your result' : 'Four puzzles. One shot. Same for everyone.'}
           </span>
         </span>
         {daily.streak > 0 && (

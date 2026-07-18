@@ -61,8 +61,8 @@ function randomPlacement(size: number): number[] | null {
 }
 
 // Flood connected regions outward from each queen, so every region is connected
-// and holds exactly one queen (its seed). Growth is round-robin — every region
-// claims one cell per pass — which keeps regions balanced and compact, and (in
+// and holds exactly one queen (its seed). Growth is round-robin - every region
+// claims one cell per pass - which keeps regions balanced and compact, and (in
 // practice) far more likely to yield a uniquely-solvable puzzle.
 function growRegions(size: number, cols: number[]): number[] {
   const total = size * size;
@@ -113,7 +113,7 @@ function findOtherSolution(size: number, regions: number[], target: number[]): n
           return;
         }
       }
-      return; // identical to target — ignore
+      return; // identical to target - ignore
     }
     for (let c = 0; c < size; c++) {
       if (usedCol[c]) continue;
@@ -250,8 +250,8 @@ interface QueensHint {
 }
 
 // Suggest the next crown with a reason. Prefer a "naked single" a player can
-// actually deduce — a region, row or column with exactly one square still free
-// of every placed crown — and explain it. Otherwise fall back to the unique
+// actually deduce - a region, row or column with exactly one square still free
+// of every placed crown - and explain it. Otherwise fall back to the unique
 // solution with a why-it-fits reason.
 export function queensHint(marks: number[], puzzle: QueensPuzzle): QueensHint | null {
   const { size, regions, solution } = puzzle;
@@ -303,6 +303,6 @@ export function queensHint(marks: number[], puzzle: QueensPuzzle): QueensHint | 
   if (target === undefined) return null;
   return {
     cell: target,
-    reason: 'This is the crown for its colour region — the one square that shares no row or column with another crown and never touches one.',
+    reason: 'This is the crown for its colour region - the one square that shares no row or column with another crown and never touches one.',
   };
 }

@@ -35,7 +35,7 @@ export const GAMES: GameMeta[] = [
     howTo: [
       'Study how the tiles change across the sequence.',
       'Pick the option that continues the pattern.',
-      'Answer quickly — speed and streaks boost your score.',
+      'Answer quickly - speed and streaks boost your score.',
     ],
     available: true,
     component: PatternRecognitionGame,
@@ -66,7 +66,7 @@ export const GAMES: GameMeta[] = [
     icon: MemoryIcon,
     howTo: [
       'Watch which tiles light up, then they hide.',
-      'Tap every tile that was lit — in any order.',
+      'Tap every tile that was lit - in any order.',
       'One wrong tile costs a life; clear the board to level up.',
     ],
     available: true,
@@ -92,12 +92,12 @@ export const GAMES: GameMeta[] = [
     id: 'odd-one-out',
     name: 'Odd One Out',
     tagline: 'Find the tile that breaks the set',
-    description: 'Every tile shares one colour — except one. Spot the odd shade before time runs out.',
+    description: 'Every tile shares one colour - except one. Spot the odd shade before time runs out.',
     skill: 'Focus',
     accent: '#f472b6',
     icon: OddOneOutIcon,
     howTo: [
-      'All tiles look the same colour — but one is slightly off.',
+      'All tiles look the same colour - but one is slightly off.',
       'Tap the odd tile as fast as you can.',
       'Each level adds more tiles and a subtler difference.',
     ],
@@ -115,7 +115,7 @@ export const GAMES: GameMeta[] = [
     howTo: [
       'Start at 1 and draw a path to 2, 3, and so on in order.',
       'Your line must pass through every cell exactly once.',
-      'Drag across the grid — trace back over the line to erase.',
+      'Drag across the grid - trace back over the line to erase.',
     ],
     available: true,
     component: ZipGame,
@@ -130,7 +130,7 @@ export const GAMES: GameMeta[] = [
     icon: CrownIcon,
     howTo: [
       'Place exactly one crown in every row, column and colour region.',
-      'No two crowns may touch — not even diagonally.',
+      'No two crowns may touch - not even diagonally.',
       'Placing a crown auto-marks the squares it rules out.',
       'Tap a square to mark it, again for a crown, again to clear.',
     ],
@@ -163,7 +163,7 @@ export const GAMES: GameMeta[] = [
     icon: ChessIcon,
     howTo: [
       'Tap a piece, then tap a piece it can capture.',
-      'Every move must capture — and each piece moves at most twice.',
+      'Every move must capture - and each piece moves at most twice.',
       'Reduce the board to a single piece to win.',
     ],
     available: true,

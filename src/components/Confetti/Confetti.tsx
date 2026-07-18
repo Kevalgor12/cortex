@@ -20,7 +20,7 @@ interface ConfettiProps {
 }
 
 /**
- * A self-contained canvas confetti burst — no dependencies. Particles rain
+ * A self-contained canvas confetti burst - no dependencies. Particles rain
  * from the top with gravity and rotation, then fade out. Mount it to fire it;
  * it cleans itself up on unmount. Skips entirely under reduced-motion.
  */

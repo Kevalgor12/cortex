@@ -188,7 +188,7 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
         ) : (
           <>
             <p className="chess__hint">
-              {stuck ? 'No moves left — undo or restart.' : 'Capture until one piece remains.'}
+              {stuck ? 'No moves left - undo or restart.' : 'Capture until one piece remains.'}
               <span className="chess__progress">{remaining} left</span>
             </p>
 

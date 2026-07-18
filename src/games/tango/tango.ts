@@ -147,7 +147,7 @@ export function createTangoPuzzle(size = 6): TangoPuzzle {
     if (given[i] < 0) given[i] = solution[i];
   }
 
-  // Prune redundant edge clues, then redundant givens — leaving a minimal set.
+  // Prune redundant edge clues, then redundant givens - leaving a minimal set.
   for (const cn of shuffle(constraints)) {
     const trial = constraints.filter((x) => x !== cn);
     if (countSolutions(size, given, trial, 2) === 1) constraints = trial;
@@ -236,7 +236,7 @@ export function tangoHint(values: number[], puzzle: TangoPuzzle): TangoHint | nu
 
     // No three in a row (horizontal / vertical, and the "sandwiched" case).
     if (c >= 2 && values[i - 1] !== -1 && values[i - 1] === values[i - 2])
-      return { cell: i, value: v, reason: `Two ${sun(values[i - 1])} already sit to the left, so this must be a ${symbolName(v)} — no three in a row.` };
+      return { cell: i, value: v, reason: `Two ${sun(values[i - 1])} already sit to the left, so this must be a ${symbolName(v)} - no three in a row.` };
     if (c <= size - 3 && values[i + 1] !== -1 && values[i + 1] === values[i + 2])
       return { cell: i, value: v, reason: `Two ${sun(values[i + 1])} sit to the right, so this must be a ${symbolName(v)}.` };
     if (c >= 1 && c <= size - 2 && values[i - 1] !== -1 && values[i - 1] === values[i + 1])
@@ -260,7 +260,7 @@ export function tangoHint(values: number[], puzzle: TangoPuzzle): TangoHint | nu
         value: v,
         reason: eq
           ? `The = clue makes it match the ${symbolName(values[other])} beside it.`
-          : `The × clue makes it the opposite of the ${symbolName(values[other])} beside it — a ${symbolName(v)}.`,
+          : `The × clue makes it the opposite of the ${symbolName(values[other])} beside it - a ${symbolName(v)}.`,
       };
     }
 

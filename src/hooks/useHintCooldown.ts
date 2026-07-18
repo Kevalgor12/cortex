@@ -5,7 +5,7 @@ export const HINT_COOLDOWN_MS = 20000;
 export interface HintCooldown {
   ready: boolean;
   remainingSec: number;
-  /** Cooldown elapsed, 0..1 — used to fill the countdown ring. */
+  /** Cooldown elapsed, 0..1 - used to fill the countdown ring. */
   progress: number;
   /** Start the cooldown (call when a hint is consumed). */
   use: () => void;

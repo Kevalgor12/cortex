@@ -1,6 +1,6 @@
 // Zip puzzle generator. A puzzle is a grid with numbered checkpoints; the
 // player draws one continuous path that covers every cell exactly once and
-// hits the numbers 1, 2, 3 … in order.
+// hits the numbers 1, 2, 3 ... in order.
 //
 // We generate the solution first (a random Hamiltonian path over the whole
 // grid) and drop the numbers onto it, so every puzzle is guaranteed solvable.
@@ -30,7 +30,7 @@ export function areAdjacent(a: number, b: number, size: number): boolean {
   return neighbors(a, size).includes(b);
 }
 
-// A boustrophedon (snake) path — a simple guaranteed Hamiltonian path.
+// A boustrophedon (snake) path - a simple guaranteed Hamiltonian path.
 function snakePath(size: number): number[] {
   const path: number[] = [];
   for (let r = 0; r < size; r++) {
@@ -127,7 +127,7 @@ export function zipHint(path: number[], puzzle: ZipPuzzle): ZipHint | null {
   while (k < path.length && k < solution.length && path[k] === solution[k]) k++;
 
   if (k < path.length) {
-    return { cell: solution[Math.min(k, solution.length - 1)], reason: 'Your line has left the only route that fills the grid — backtrack to the glowing cell.' };
+    return { cell: solution[Math.min(k, solution.length - 1)], reason: 'Your line has left the only route that fills the grid - backtrack to the glowing cell.' };
   }
   if (k >= solution.length) return null;
 

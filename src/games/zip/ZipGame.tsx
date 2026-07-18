@@ -39,7 +39,7 @@ export default function ZipGame({ meta, onExit }: GameProps) {
   const hintUsedRef = useRef(false);
   const hintTimerRef = useRef<number>();
 
-  // Stopwatch — a 1-tick interval is plenty for a m:ss display, and the final
+  // Stopwatch - a 1-tick interval is plenty for a m:ss display, and the final
   // time is measured precisely from performance.now on solve.
   useEffect(() => {
     if (solved) return;
@@ -179,7 +179,7 @@ export default function ZipGame({ meta, onExit }: GameProps) {
         ) : (
           <>
             <p className="zip__hint">
-              Fill every cell — connect {puzzle.count} numbers in order.
+              Fill every cell - connect {puzzle.count} numbers in order.
               <span className="zip__progress">
                 {filled}/{size * size}
               </span>

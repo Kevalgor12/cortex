@@ -16,7 +16,7 @@ import './QueensGame.scss';
 const SIZE = 8;
 const BEST_KEY = 'queens:best';
 
-// One distinct colour per region — soft LinkedIn-style pastels.
+// One distinct colour per region - soft LinkedIn-style pastels.
 const REGION_COLORS = [
   '#b8a6e6', // lavender
   '#a8d38b', // sage green
@@ -137,7 +137,7 @@ export default function QueensGame({ meta, onExit }: GameProps) {
       if (solvedRef.current) return;
       const next = [...marksRef.current];
       const cur = next[cell];
-      // empty → X → crown → empty. An already auto-X'd empty cell jumps
+      // empty -> X -> crown -> empty. An already auto-X'd empty cell jumps
       // straight to a crown (it's visually a dot already).
       next[cell] = cur === 2 ? 0 : cur === 1 ? 2 : autoXRef.current.has(cell) ? 2 : 1;
       marksRef.current = next;
@@ -200,7 +200,7 @@ export default function QueensGame({ meta, onExit }: GameProps) {
         ) : (
           <>
             <p className="queens__hint">
-              One <CrownIcon className="queens__hint-icon" /> per row, column & colour — none
+              One <CrownIcon className="queens__hint-icon" /> per row, column & colour - none
               touching.
               <span className="queens__progress">
                 {queenCount}/{size}

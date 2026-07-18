@@ -31,7 +31,7 @@
     font-variant-numeric: tabular-nums;
   }
 
-  // Ready — invite the tap with a soft amber pulse and a flickering bulb.
+  // Ready - invite the tap with a soft amber pulse and a flickering bulb.
   &.is-ready {
     border-color: color-mix(in srgb, var(--warning) 50%, transparent);
     animation: hint-glow 2s ease-in-out infinite;

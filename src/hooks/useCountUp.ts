@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 // Snap instantly (no animation) when the tab is hidden or the user prefers
-// reduced motion — so the final number is always shown, never stuck at 0.
+// reduced motion - so the final number is always shown, never stuck at 0.
 function shouldSnap(): boolean {
   if (typeof document !== 'undefined' && document.hidden) return true;
   return (

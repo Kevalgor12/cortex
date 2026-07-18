@@ -4,7 +4,7 @@ import './HintButton.scss';
 interface HintButtonProps {
   ready: boolean;
   remainingSec: number;
-  /** Cooldown elapsed, 0..1 — fills the progress bar as it counts down. */
+  /** Cooldown elapsed, 0..1 - fills the progress bar as it counts down. */
   progress: number;
   onUse: () => void;
 }

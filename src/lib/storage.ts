@@ -15,6 +15,6 @@ export function writeValue<T>(key: string, value: T): void {
   try {
     localStorage.setItem(PREFIX + key, JSON.stringify(value));
   } catch {
-    // Ignore quota / private-mode failures — persistence is best-effort.
+    // Ignore quota / private-mode failures - persistence is best-effort.
   }
 }
