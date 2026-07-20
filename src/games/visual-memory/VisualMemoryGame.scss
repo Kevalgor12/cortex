@@ -21,6 +21,7 @@
 
   &__grid {
     display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
     gap: 10px;
     width: 100%;
     max-width: 360px;

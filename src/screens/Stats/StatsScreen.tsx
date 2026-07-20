@@ -48,7 +48,7 @@ export default function StatsScreen({ onExit }: StatsScreenProps) {
           const stat = stats[game.id];
           const Icon = game.icon;
           return (
-            <div className="stats__game" key={game.id} style={{ ['--accent' as string]: game.accent }}>
+            <div className="stats__game" key={game.id} data-game={game.id}>
               <span className="stats__game-icon">
                 <Icon />
               </span>

@@ -131,6 +131,8 @@
   height: 100%;
   max-width: 42px;
   max-height: 42px;
+  color: var(--glyph, currentColor);
+  transform: rotate(var(--rot, 0deg));
   transition: transform 0.2s ease;
 }
 

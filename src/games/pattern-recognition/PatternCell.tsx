@@ -1,5 +1,7 @@
 import type { Cell } from './patterns';
 
+import { cssVars } from '../../lib/cssVars';
+
 import { PATTERN_COLORS } from './patterns';
 
 // Renders a single pattern cell as an SVG glyph. Rotation is applied to the
@@ -24,7 +26,7 @@ export default function PatternCell({ cell }: PatternCellProps) {
     <svg
       className="pattern-glyph"
       viewBox="0 0 100 100"
-      style={{ transform: `rotate(${cell.rotation}deg)`, color }}
+      ref={cssVars({ '--rot': `${cell.rotation}deg`, '--glyph': color })}
       aria-hidden="true"
     >
       <g fill="currentColor">{SHAPES[cell.shape]}</g>

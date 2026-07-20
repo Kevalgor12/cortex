@@ -160,10 +160,9 @@ export default function ZipGame({ meta, onExit }: GameProps) {
   const points = path.map((i) => `${(i % size) + 0.5},${Math.floor(i / size) + 0.5}`).join(' ');
   const headCell = path[path.length - 1];
   const filled = path.length;
-  const accent = { ['--accent' as string]: meta.accent };
 
   return (
-    <div className="zip" style={accent}>
+    <div className="zip" data-game={meta.id}>
       <PuzzleBar title={meta.name} rules={meta.howTo} elapsedMs={elapsed} onExit={onExit} />
 
       <main className="zip__body container">
@@ -192,7 +191,6 @@ export default function ZipGame({ meta, onExit }: GameProps) {
               onPointerMove={onPointerMove}
               onPointerUp={endDrawing}
               onPointerCancel={endDrawing}
-              style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}
             >
               <svg className="zip__lines" viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
                 {path.length > 1 && (

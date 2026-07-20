@@ -97,6 +97,26 @@ button {
   background: var(--border-strong);
 }
 
+// Per-game accent theming. A `data-game` attribute on the game root (and on the
+// home cards / stat rows) selects the colour, so no accent needs an inline style.
+$game-accents: (
+  'pattern-recognition': #818cf8,
+  'quick-math': #22c55e,
+  'visual-memory': #38bdf8,
+  'logic': #f59e0b,
+  'odd-one-out': #f472b6,
+  'zip': #f97316,
+  'queens': #a855f7,
+  'tango': #f43f5e,
+  'solo-chess': #22d3ee,
+);
+
+@each $id, $color in $game-accents {
+  [data-game='#{$id}'] {
+    --accent: #{$color};
+  }
+}
+
 h1,
 h2,
 h3,

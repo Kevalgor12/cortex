@@ -80,7 +80,7 @@ function GameCard({ game, onSelect }: { game: GameMeta; onSelect: (id: GameId) =
   return (
     <button
       className={`card${game.available ? '' : ' card--locked'}`}
-      style={{ ['--accent' as string]: game.accent }}
+      data-game={game.id}
       onClick={() => game.available && onSelect(game.id)}
       disabled={!game.available}
     >

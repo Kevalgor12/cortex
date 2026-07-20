@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import type { GameProps } from '../../types/game';
 
+import { cssVars } from '../../lib/cssVars';
 import { readValue, writeValue } from '../../lib/storage';
 
 import { createQueensPuzzle, evaluateQueens, queensHint, type QueensPuzzle } from './queens';
@@ -167,7 +168,6 @@ export default function QueensGame({ meta, onExit }: GameProps) {
 
   const { size, regions } = puzzle;
   const queenCount = marks.filter((m) => m === 2).length;
-  const accent = { ['--accent' as string]: meta.accent };
 
   // Thick line where a cell meets a different colour region, thin within one.
   // Only top/left are drawn per cell (each shared edge once); the outer frame
@@ -178,13 +178,13 @@ export default function QueensGame({ meta, onExit }: GameProps) {
     const edge = (different: boolean) =>
       different ? '2px solid var(--q-line-strong)' : '1px solid var(--q-line-soft)';
     return {
-      borderTop: r === 0 ? 'none' : edge(regions[i - size] !== regions[i]),
-      borderLeft: c === 0 ? 'none' : edge(regions[i - 1] !== regions[i]),
+      ['--bt' as string]: r === 0 ? 'none' : edge(regions[i - size] !== regions[i]),
+      ['--bl' as string]: c === 0 ? 'none' : edge(regions[i - 1] !== regions[i]),
     };
   };
 
   return (
-    <div className="queens" style={accent}>
+    <div className="queens" data-game={meta.id}>
       <PuzzleBar title={meta.name} rules={meta.howTo} elapsedMs={elapsed} onExit={onExit} />
 
       <main className="queens__body container">
@@ -207,10 +207,7 @@ export default function QueensGame({ meta, onExit }: GameProps) {
               </span>
             </p>
 
-            <div
-              className="queens__grid"
-              style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}
-            >
+            <div className="queens__grid">
               {regions.map((region, i) => {
                 const mark = marks[i];
                 const conflict = mark === 2 && conflicts.has(i);
@@ -219,7 +216,7 @@ export default function QueensGame({ meta, onExit }: GameProps) {
                   <button
                     key={i}
                     className={`queens__cell${conflict ? ' is-conflict' : ''}${hintCell === i ? ' is-hint' : ''}`}
-                    style={{ background: REGION_COLORS[region % REGION_COLORS.length], ...regionBorder(i) }}
+                    ref={cssVars({ '--cell': REGION_COLORS[region % REGION_COLORS.length], ...regionBorder(i) })}
                     onClick={() => tap(i)}
                     aria-label={`Cell ${i + 1}`}
                   >

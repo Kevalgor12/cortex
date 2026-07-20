@@ -8,6 +8,7 @@
   &__fill {
     height: 100%;
     width: 100%;
+    transform: scaleX(var(--pct, 1));
     transform-origin: left center;
     border-radius: inherit;
     // Only the colour eases; the per-frame rAF scale stays crisp.

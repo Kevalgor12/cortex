@@ -1,6 +1,8 @@
 import type { DifficultyConfig } from '../../engine/difficulty';
 import type { GameProps } from '../../types/game';
 
+import { cssVars } from '../../lib/cssVars';
+
 import { createOddChallenge, type OddChallenge } from './odd';
 import GameFrame from '../../components/GameFrame/GameFrame';
 import { useChallengeGame } from '../../engine/useChallengeGame';
@@ -50,10 +52,7 @@ export default function OddOneOutGame({ meta, onExit }: GameProps) {
         <div className={`odd${result ? ` odd--${result}` : ''}`}>
           <p className="odd__prompt">Tap the odd one out</p>
 
-          <div
-            className="odd__grid"
-            style={{ gridTemplateColumns: `repeat(${challenge.size}, 1fr)` }}
-          >
+          <div className="odd__grid" ref={cssVars({ '--cols': challenge.size })}>
             {Array.from({ length: challenge.size * challenge.size }, (_, i) => {
               const isOdd = i === challenge.oddIndex;
               const stateClass =
@@ -68,7 +67,7 @@ export default function OddOneOutGame({ meta, onExit }: GameProps) {
                 <button
                   key={i}
                   className={`odd__tile ${stateClass}`.trim()}
-                  style={{ background: isOdd ? challenge.oddColor : challenge.baseColor }}
+                  ref={cssVars({ '--tile': isOdd ? challenge.oddColor : challenge.baseColor })}
                   onClick={() => game.answer(i, isOdd)}
                   disabled={phase === 'reveal'}
                   aria-label={`Tile ${i + 1}`}

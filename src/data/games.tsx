@@ -30,7 +30,6 @@ export const GAMES: GameMeta[] = [
     tagline: 'Spot the rule, predict what comes next',
     description: 'A sequence follows a hidden rule. Read it fast and pick the tile that continues it.',
     skill: 'Reasoning',
-    accent: '#818cf8',
     icon: PatternIcon,
     howTo: [
       'Study how the tiles change across the sequence.',
@@ -46,7 +45,6 @@ export const GAMES: GameMeta[] = [
     tagline: 'Mental arithmetic against the clock',
     description: 'Solve rapid-fire equations before the timer runs out. The maths gets harder as you go.',
     skill: 'Speed',
-    accent: '#22c55e',
     icon: MathIcon,
     howTo: [
       'Solve the equation shown on screen.',
@@ -62,7 +60,6 @@ export const GAMES: GameMeta[] = [
     tagline: 'Remember the tiles that lit up',
     description: 'A grid of tiles flashes for a moment. Reproduce it from memory before the clock runs out.',
     skill: 'Memory',
-    accent: '#38bdf8',
     icon: MemoryIcon,
     howTo: [
       'Watch which tiles light up, then they hide.',
@@ -78,7 +75,6 @@ export const GAMES: GameMeta[] = [
     tagline: 'Deduce the answer step by step',
     description: 'Each series follows a hidden rule. Work it out and pick the number that comes next.',
     skill: 'Logic',
-    accent: '#f59e0b',
     icon: LogicIcon,
     howTo: [
       'Study how the numbers change across the series.',
@@ -94,7 +90,6 @@ export const GAMES: GameMeta[] = [
     tagline: 'Find the tile that breaks the set',
     description: 'Every tile shares one colour - except one. Spot the odd shade before time runs out.',
     skill: 'Focus',
-    accent: '#f472b6',
     icon: OddOneOutIcon,
     howTo: [
       'All tiles look the same colour - but one is slightly off.',
@@ -110,7 +105,6 @@ export const GAMES: GameMeta[] = [
     tagline: 'Draw one path through every cell',
     description: 'Connect the numbers in order with a single line that fills every square of the grid.',
     skill: 'Planning',
-    accent: '#f97316',
     icon: ZipIcon,
     howTo: [
       'Start at 1 and draw a path to 2, 3, and so on in order.',
@@ -126,7 +120,6 @@ export const GAMES: GameMeta[] = [
     tagline: 'One crown per row, column and colour',
     description: 'Place a crown in every row, column and colour region so that no two crowns touch.',
     skill: 'Deduction',
-    accent: '#a855f7',
     icon: CrownIcon,
     howTo: [
       'Place exactly one crown in every row, column and colour region.',
@@ -143,7 +136,6 @@ export const GAMES: GameMeta[] = [
     tagline: 'Balance the suns and moons',
     description: 'Fill the grid so each row and column has three suns and three moons, obeying every = and × clue.',
     skill: 'Logic',
-    accent: '#f43f5e',
     icon: SunIcon,
     howTo: [
       'Each row and column needs three suns and three moons.',
@@ -159,7 +151,6 @@ export const GAMES: GameMeta[] = [
     tagline: 'Capture down to a single piece',
     description: 'Every move must be a capture and each piece moves at most twice. Clear the board to one piece.',
     skill: 'Tactics',
-    accent: '#22d3ee',
     icon: ChessIcon,
     howTo: [
       'Tap a piece, then tap a piece it can capture.',

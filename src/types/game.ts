@@ -20,8 +20,6 @@ export interface GameMeta {
   description: string;
   /** The mental skill this game trains, shown as a tag. */
   skill: string;
-  /** Hex accent used for the card and in-game theming. */
-  accent: string;
   icon: ComponentType<{ className?: string }>;
   /** Short bullet list rendered on the pre-game "ready" screen. */
   howTo: string[];

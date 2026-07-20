@@ -46,6 +46,7 @@
     --q-line-strong: rgba(9, 11, 16, 0.82);
     --q-line-soft: rgba(9, 11, 16, 0.16);
     display: grid;
+    grid-template-columns: repeat(8, 1fr);
     width: 100%;
     max-width: 400px;
     aspect-ratio: 1;
@@ -62,7 +63,10 @@
     place-items: center;
     aspect-ratio: 1;
     cursor: pointer;
-    // Region borders (top/left) are set inline per cell.
+    // Fill and region borders come from per-cell custom properties.
+    background: var(--cell);
+    border-top: var(--bt, none);
+    border-left: var(--bl, none);
     transition: filter 0.12s ease;
 
     &:hover {

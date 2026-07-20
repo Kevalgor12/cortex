@@ -1,3 +1,5 @@
+import { cssVars } from '../../lib/cssVars';
+
 import { BulbIcon } from '../icons';
 import './HintButton.scss';
 
@@ -18,7 +20,7 @@ export default function HintButton({ ready, remainingSec, progress, onUse }: Hin
       disabled={!ready}
       title={ready ? 'Reveal a hint' : `Next hint in ${remainingSec}s`}
       aria-label={ready ? 'Reveal a hint' : `Hint available in ${remainingSec} seconds`}
-      style={{ ['--hint-progress' as string]: progress }}
+      ref={cssVars({ '--hint-progress': progress })}
     >
       <span className="hint-btn__icon">
         <BulbIcon />

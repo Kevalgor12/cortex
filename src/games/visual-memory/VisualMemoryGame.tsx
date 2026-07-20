@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import type { GameProps } from '../../types/game';
 
+import { cssVars } from '../../lib/cssVars';
+
 import { createBoard, memorizeDuration, recallDuration, type MemoryBoard } from './board';
 import GameFrame from '../../components/GameFrame/GameFrame';
 import { scoreRound } from '../../engine/scoring';
@@ -169,7 +171,7 @@ export default function VisualMemoryGame({ meta, onExit }: GameProps) {
 
           <div
             className={`memory__grid${phase === 'reveal' && !cleared ? ' is-shake' : ''}`}
-            style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}
+            ref={cssVars({ '--cols': size })}
           >
             {Array.from({ length: size * size }, (_, index) => (
               <button

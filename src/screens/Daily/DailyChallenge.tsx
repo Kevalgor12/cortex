@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 
+import { cssVars } from '../../lib/cssVars';
 import { completeDaily, dateSeed, isDoneToday, readDaily, todayKey, type DailyState } from '../../lib/daily';
 import { withSeededRandom } from '../../lib/rng';
 
@@ -227,12 +228,12 @@ function RoundView({
     return (
       <>
         <p className="daily__prompt">Tap the odd one out</p>
-        <div className="daily__odd-grid" style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}>
+        <div className="daily__odd-grid" ref={cssVars({ '--cols': size })}>
           {Array.from({ length: size * size }, (_, i) => (
             <button
               key={i}
               className={`daily__odd-tile ${optionClass(i)}`.trim()}
-              style={{ background: i === oddIndex ? oddColor : baseColor }}
+              ref={cssVars({ '--tile': i === oddIndex ? oddColor : baseColor })}
               onClick={() => onPick(i)}
               disabled={revealing}
               aria-label={`Tile ${i + 1}`}

@@ -169,10 +169,9 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
 
   const remaining = countPieces(board);
   const stuck = !solved && remaining > 1 && !hasAnyMove(board, SIZE);
-  const accent = { ['--accent' as string]: meta.accent };
 
   return (
-    <div className="chess" style={accent}>
+    <div className="chess" data-game={meta.id}>
       <PuzzleBar title={meta.name} rules={meta.howTo} elapsedMs={elapsed} onExit={onExit} />
 
       <main className="chess__body container">
@@ -192,7 +191,7 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
               <span className="chess__progress">{remaining} left</span>
             </p>
 
-            <div className="chess__board" style={{ gridTemplateColumns: `repeat(${SIZE}, 1fr)` }}>
+            <div className="chess__board">
               {board.map((piece, i) => {
                 const dark = (Math.floor(i / SIZE) + (i % SIZE)) % 2 === 1;
                 const isSel = selected === i;

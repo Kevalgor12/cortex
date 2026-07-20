@@ -1,3 +1,5 @@
+import { cssVars } from '../../lib/cssVars';
+
 import './TimerBar.scss';
 
 interface TimerBarProps {
@@ -27,7 +29,7 @@ export default function TimerBar({ progress }: TimerBarProps) {
     >
       <div
         className={`timer-bar__fill timer-bar__fill--${stage}`}
-        style={{ transform: `scaleX(${pct})` }}
+        ref={cssVars({ '--pct': pct })}
       />
     </div>
   );

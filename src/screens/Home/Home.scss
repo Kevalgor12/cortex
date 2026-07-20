@@ -93,8 +93,13 @@
   }
 }
 
-.card {
+// Fallback accent; the per-card [data-game] rule overrides it regardless of
+// source order, since :where() adds zero specificity.
+:where(.card) {
   --accent: var(--primary);
+}
+
+.card {
   display: flex;
   align-items: center;
   gap: 16px;

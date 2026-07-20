@@ -53,7 +53,7 @@ export default function GameFrame({
   const Icon = meta.icon;
 
   return (
-    <div className="game-frame" style={{ ['--accent' as string]: meta.accent }}>
+    <div className="game-frame" data-game={meta.id}>
       <header className="game-frame__bar container">
         <button className="game-frame__back" onClick={onExit} aria-label="Back to home">
           <ArrowLeftIcon />

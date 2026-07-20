@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { GameProps } from '../../types/game';
 
+import { cssVars } from '../../lib/cssVars';
 import { readValue, writeValue } from '../../lib/storage';
 
 import { createTangoPuzzle, evaluateTango, tangoHint, type TangoPuzzle } from './tango';
@@ -114,13 +115,12 @@ export default function TangoGame({ meta, onExit }: GameProps) {
 
   const { size, given, constraints } = puzzle;
   const placed = values.filter((v) => v >= 0).length;
-  const accent = { ['--accent' as string]: meta.accent };
 
   const symbol = (v: number) =>
     v === 0 ? <SunIcon className="tango__sun" /> : v === 1 ? <MoonIcon className="tango__moon" /> : null;
 
   return (
-    <div className="tango" style={accent}>
+    <div className="tango" data-game={meta.id}>
       <PuzzleBar title={meta.name} rules={meta.howTo} elapsedMs={elapsed} onExit={onExit} />
 
       <main className="tango__body container">
@@ -144,7 +144,7 @@ export default function TangoGame({ meta, onExit }: GameProps) {
               </span>
             </p>
 
-            <div className="tango__grid" style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}>
+            <div className="tango__grid">
               {values.map((v, i) => {
                 const locked = given[i] >= 0;
                 return (
@@ -173,7 +173,7 @@ export default function TangoGame({ meta, onExit }: GameProps) {
                     <span
                       key={k}
                       className="tango__clue"
-                      style={{ left: `${left}%`, top: `${top}%` }}
+                      ref={cssVars({ '--x': `${left}%`, '--y': `${top}%` })}
                     >
                       {eq ? '=' : '×'}
                     </span>
