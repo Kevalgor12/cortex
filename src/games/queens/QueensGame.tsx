@@ -7,6 +7,7 @@ import { readValue, writeValue } from '../../lib/storage';
 
 import { createQueensPuzzle, evaluateQueens, queensHint, type QueensPuzzle } from './queens';
 import Button from '../../components/Button/Button';
+import HintBanner from '../../components/HintBanner/HintBanner';
 import HintButton from '../../components/HintButton/HintButton';
 import { CrownIcon, RefreshIcon } from '../../components/icons';
 import PuzzleBar from '../../components/PuzzleBar/PuzzleBar';
@@ -34,6 +35,7 @@ const REGION_COLORS = [
 export default function QueensGame({ meta, onExit }: GameProps) {
   const [puzzle, setPuzzle] = useState<QueensPuzzle>(() => createQueensPuzzle(SIZE));
   const [marks, setMarks] = useState<number[]>(() => new Array(puzzle.size * puzzle.size).fill(0));
+  const [history, setHistory] = useState<number[][]>([]);
   const [conflicts, setConflicts] = useState<Set<number>>(new Set());
   const [solved, setSolved] = useState(false);
   const [elapsed, setElapsed] = useState(0);
@@ -77,7 +79,8 @@ export default function QueensGame({ meta, onExit }: GameProps) {
   solvedRef.current = solved;
   const startRef = useRef(performance.now());
   const hintUsedRef = useRef(false);
-  const hintTimerRef = useRef<number>();
+  const hintCellRef = useRef<number | null>(null);
+  hintCellRef.current = hintCell;
 
   useEffect(() => {
     if (solved) return;
@@ -85,16 +88,19 @@ export default function QueensGame({ meta, onExit }: GameProps) {
     return () => window.clearInterval(id);
   }, [solved, puzzle]);
 
-  useEffect(() => () => window.clearTimeout(hintTimerRef.current), []);
+  const dismissHint = useCallback(() => {
+    setHintCell(null);
+    setHintMsg('');
+  }, []);
 
   const resetBoard = useCallback((next: QueensPuzzle) => {
     setMarks(new Array(next.size * next.size).fill(0));
+    setHistory([]);
     setConflicts(new Set());
     setSolved(false);
     setIsBest(false);
     setElapsed(0);
     startRef.current = performance.now();
-    window.clearTimeout(hintTimerRef.current);
     setHintCell(null);
     setHintMsg('');
     setHintUsed(false);
@@ -102,7 +108,8 @@ export default function QueensGame({ meta, onExit }: GameProps) {
     hint.reset();
   }, [hint]);
 
-  // Reveal a deducible crown and explain why it belongs there.
+  // Reveal a deducible crown and explain why it belongs there. The hint stays
+  // put until the crown is placed (see tap) or the player dismisses it.
   const useHint = useCallback(() => {
     if (!hint.ready || solvedRef.current) return;
     const suggestion = queensHint(marksRef.current, puzzle);
@@ -113,12 +120,6 @@ export default function QueensGame({ meta, onExit }: GameProps) {
     setHintUsed(true);
     hintUsedRef.current = true;
     hint.use();
-
-    window.clearTimeout(hintTimerRef.current);
-    hintTimerRef.current = window.setTimeout(() => {
-      setHintCell(null);
-      setHintMsg('');
-    }, 3000);
   }, [hint, puzzle]);
 
   const newGame = useCallback(() => {
@@ -129,20 +130,47 @@ export default function QueensGame({ meta, onExit }: GameProps) {
 
   const clearBoard = useCallback(() => {
     if (solvedRef.current) return;
-    setMarks(new Array(puzzle.size * puzzle.size).fill(0));
+    const prev = marksRef.current;
+    const fresh = new Array(puzzle.size * puzzle.size).fill(0);
+    setHistory((h) => [...h, prev]);
+    marksRef.current = fresh;
+    setMarks(fresh);
     setConflicts(new Set());
+  }, [puzzle]);
+
+  const undo = useCallback(() => {
+    setHistory((h) => {
+      if (!h.length) return h;
+      const prev = h[h.length - 1];
+      marksRef.current = prev;
+      setMarks(prev);
+      const queens: number[] = [];
+      prev.forEach((m, i) => {
+        if (m === 2) queens.push(i);
+      });
+      setConflicts(evaluateQueens(queens, puzzle).conflicts);
+      return h.slice(0, -1);
+    });
   }, [puzzle]);
 
   const tap = useCallback(
     (cell: number) => {
       if (solvedRef.current) return;
-      const next = [...marksRef.current];
+      const prev = marksRef.current;
+      const next = [...prev];
       const cur = next[cell];
       // empty -> X -> crown -> empty. An already auto-X'd empty cell jumps
       // straight to a crown (it's visually a dot already).
       next[cell] = cur === 2 ? 0 : cur === 1 ? 2 : autoXRef.current.has(cell) ? 2 : 1;
+      setHistory((h) => [...h, prev]);
       marksRef.current = next;
       setMarks(next);
+
+      // Placing the suggested crown fulfils the hint - retire it.
+      if (hintCellRef.current === cell && next[cell] === 2) {
+        setHintCell(null);
+        setHintMsg('');
+      }
 
       const queens: number[] = [];
       next.forEach((m, i) => {
@@ -227,7 +255,7 @@ export default function QueensGame({ meta, onExit }: GameProps) {
               })}
             </div>
 
-            <p className={`queens__hint-msg${hintMsg ? ' is-shown' : ''}`}>{hintMsg}</p>
+            <HintBanner message={hintMsg} onDismiss={dismissHint} />
 
             <div className="queens__controls">
               <HintButton
@@ -236,6 +264,9 @@ export default function QueensGame({ meta, onExit }: GameProps) {
                 progress={hint.progress}
                 onUse={useHint}
               />
+              <Button variant="subtle" onClick={undo} disabled={history.length === 0}>
+                Undo
+              </Button>
               <Button variant="subtle" onClick={clearBoard}>
                 <RefreshIcon />
                 Clear

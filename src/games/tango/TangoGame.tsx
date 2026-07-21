@@ -7,6 +7,7 @@ import { readValue, writeValue } from '../../lib/storage';
 
 import { createTangoPuzzle, evaluateTango, tangoHint, type TangoPuzzle } from './tango';
 import Button from '../../components/Button/Button';
+import HintBanner from '../../components/HintBanner/HintBanner';
 import HintButton from '../../components/HintButton/HintButton';
 import { MoonIcon, RefreshIcon, SunIcon } from '../../components/icons';
 import PuzzleBar from '../../components/PuzzleBar/PuzzleBar';
@@ -16,10 +17,14 @@ import './TangoGame.scss';
 
 const SIZE = 6;
 const BEST_KEY = 'tango:best';
+// Hold off flagging a bad move for a beat, so a symbol isn't marked wrong the
+// instant it's placed - the player gets a moment to see their own move first.
+const VIOLATION_DELAY_MS = 2500;
 
 export default function TangoGame({ meta, onExit }: GameProps) {
   const [puzzle, setPuzzle] = useState<TangoPuzzle>(() => createTangoPuzzle(SIZE));
   const [values, setValues] = useState<number[]>(() => puzzle.given.slice());
+  const [history, setHistory] = useState<number[][]>([]);
   const [violations, setViolations] = useState<Set<number>>(new Set());
   const [solved, setSolved] = useState(false);
   const [elapsed, setElapsed] = useState(0);
@@ -36,7 +41,9 @@ export default function TangoGame({ meta, onExit }: GameProps) {
   solvedRef.current = solved;
   const startRef = useRef(performance.now());
   const hintUsedRef = useRef(false);
-  const hintTimerRef = useRef<number>();
+  const hintCellRef = useRef<number | null>(null);
+  hintCellRef.current = hintCell;
+  const violationTimerRef = useRef<number>();
 
   useEffect(() => {
     if (solved) return;
@@ -44,18 +51,19 @@ export default function TangoGame({ meta, onExit }: GameProps) {
     return () => window.clearInterval(id);
   }, [solved, puzzle]);
 
-  useEffect(() => () => window.clearTimeout(hintTimerRef.current), []);
+  useEffect(() => () => window.clearTimeout(violationTimerRef.current), []);
 
   const newGame = useCallback(() => {
     const next = createTangoPuzzle(SIZE);
     setPuzzle(next);
     setValues(next.given.slice());
+    setHistory([]);
+    window.clearTimeout(violationTimerRef.current);
     setViolations(new Set());
     setSolved(false);
     setIsBest(false);
     setElapsed(0);
     startRef.current = performance.now();
-    window.clearTimeout(hintTimerRef.current);
     setHintCell(null);
     setHintMsg('');
     setHintUsed(false);
@@ -63,7 +71,13 @@ export default function TangoGame({ meta, onExit }: GameProps) {
     hint.reset();
   }, [hint]);
 
-  // Reveal one deducible cell, and explain why it must be that symbol.
+  const dismissHint = useCallback(() => {
+    setHintCell(null);
+    setHintMsg('');
+  }, []);
+
+  // Reveal one deducible cell, and explain why it must be that symbol. The hint
+  // stays until the player fills that cell correctly (see tap) or dismisses it.
   const useHint = useCallback(() => {
     if (!hint.ready || solvedRef.current) return;
     const suggestion = tangoHint(valuesRef.current, puzzle);
@@ -74,31 +88,52 @@ export default function TangoGame({ meta, onExit }: GameProps) {
     setHintUsed(true);
     hintUsedRef.current = true;
     hint.use();
-
-    window.clearTimeout(hintTimerRef.current);
-    hintTimerRef.current = window.setTimeout(() => {
-      setHintCell(null);
-      setHintMsg('');
-    }, 3000);
   }, [hint, puzzle]);
 
   const clearBoard = useCallback(() => {
     if (solvedRef.current) return;
-    setValues(puzzle.given.slice());
+    const prev = valuesRef.current;
+    const fresh = puzzle.given.slice();
+    setHistory((h) => [...h, prev]);
+    valuesRef.current = fresh;
+    setValues(fresh);
+    window.clearTimeout(violationTimerRef.current);
     setViolations(new Set());
   }, [puzzle]);
+
+  const undo = useCallback(() => {
+    setHistory((h) => {
+      if (!h.length) return h;
+      const prev = h[h.length - 1];
+      valuesRef.current = prev;
+      setValues(prev);
+      // Don't re-flag on undo - stay in step with the delayed-violation rule.
+      window.clearTimeout(violationTimerRef.current);
+      setViolations(new Set());
+      return h.slice(0, -1);
+    });
+  }, []);
 
   const tap = useCallback(
     (cell: number) => {
       if (solvedRef.current || puzzle.given[cell] >= 0) return;
-      const next = [...valuesRef.current];
+      const prev = valuesRef.current;
+      const next = [...prev];
       next[cell] = next[cell] === -1 ? 0 : next[cell] === 0 ? 1 : -1;
+      setHistory((h) => [...h, prev]);
       valuesRef.current = next;
       setValues(next);
 
+      // Filling the hinted cell with the right symbol fulfils the hint.
+      if (hintCellRef.current === cell && next[cell] === puzzle.solution[cell]) {
+        setHintCell(null);
+        setHintMsg('');
+      }
+
       const result = evaluateTango(next, puzzle);
-      setViolations(result.violations);
+      window.clearTimeout(violationTimerRef.current);
       if (result.solved) {
+        setViolations(new Set());
         const time = performance.now() - startRef.current;
         setElapsed(time);
         setSolved(true);
@@ -108,7 +143,13 @@ export default function TangoGame({ meta, onExit }: GameProps) {
           setBest(time);
           setIsBest(true);
         }
+        return;
       }
+      // Hide any current flag while thinking, then reveal a wrong move after a beat.
+      setViolations(new Set());
+      violationTimerRef.current = window.setTimeout(() => {
+        setViolations(result.violations);
+      }, VIOLATION_DELAY_MS);
     },
     [puzzle],
   );
@@ -182,7 +223,7 @@ export default function TangoGame({ meta, onExit }: GameProps) {
               </div>
             </div>
 
-            <p className={`tango__hint-msg${hintMsg ? ' is-shown' : ''}`}>{hintMsg}</p>
+            <HintBanner message={hintMsg} onDismiss={dismissHint} />
 
             <div className="tango__controls">
               <HintButton
@@ -191,6 +232,9 @@ export default function TangoGame({ meta, onExit }: GameProps) {
                 progress={hint.progress}
                 onUse={useHint}
               />
+              <Button variant="subtle" onClick={undo} disabled={history.length === 0}>
+                Undo
+              </Button>
               <Button variant="subtle" onClick={clearBoard}>
                 <RefreshIcon />
                 Clear

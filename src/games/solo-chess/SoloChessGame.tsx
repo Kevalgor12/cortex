@@ -14,6 +14,7 @@ import {
   type PieceType,
 } from './soloChess';
 import Button from '../../components/Button/Button';
+import HintBanner from '../../components/HintBanner/HintBanner';
 import HintButton from '../../components/HintButton/HintButton';
 import { RefreshIcon } from '../../components/icons';
 import PuzzleBar from '../../components/PuzzleBar/PuzzleBar';
@@ -52,7 +53,8 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
   solvedRef.current = solved;
   const startRef = useRef(performance.now());
   const hintUsedRef = useRef(false);
-  const hintTimerRef = useRef<number>();
+  const hintMoveRef = useRef<{ from: number; to: number } | null>(null);
+  hintMoveRef.current = hintMove;
 
   useEffect(() => {
     if (solved) return;
@@ -60,7 +62,10 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
     return () => window.clearInterval(id);
   }, [solved, board]);
 
-  useEffect(() => () => window.clearTimeout(hintTimerRef.current), []);
+  const dismissHint = useCallback(() => {
+    setHintMove(null);
+    setHintMsg('');
+  }, []);
 
   const reset = useCallback(
     (base: Board) => {
@@ -71,7 +76,6 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
       setIsBest(false);
       setElapsed(0);
       startRef.current = performance.now();
-      window.clearTimeout(hintTimerRef.current);
       setHintMove(null);
       setHintMsg('');
       setHintUsed(false);
@@ -81,7 +85,8 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
     [hint],
   );
 
-  // Suggest a solvable capture and explain why it's the move to make now.
+  // Suggest a solvable capture and explain why it's the move to make now. The
+  // hint stays until that capture is played (see clickSquare) or dismissed.
   const useHint = useCallback(() => {
     if (!hint.ready || solvedRef.current) return;
     const suggestion = soloHint(board, SIZE);
@@ -93,12 +98,6 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
     hintUsedRef.current = true;
     setSelected(suggestion.from);
     hint.use();
-
-    window.clearTimeout(hintTimerRef.current);
-    hintTimerRef.current = window.setTimeout(() => {
-      setHintMove(null);
-      setHintMsg('');
-    }, 3500);
   }, [board, hint]);
 
   const newGame = useCallback(() => {
@@ -150,6 +149,13 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
         setHistory((h) => [...h, clone(board)]);
         setBoard(next);
         setSelected(null);
+
+        // Playing the suggested capture fulfils the hint - retire it.
+        const move = hintMoveRef.current;
+        if (move && selected === move.from && cell === move.to) {
+          setHintMove(null);
+          setHintMsg('');
+        }
 
         if (countPieces(next) === 1) {
           const time = performance.now() - startRef.current;
@@ -226,7 +232,7 @@ export default function SoloChessGame({ meta, onExit }: GameProps) {
               })}
             </div>
 
-            <p className={`chess__hint-msg${hintMsg ? ' is-shown' : ''}`}>{hintMsg}</p>
+            <HintBanner message={hintMsg} onDismiss={dismissHint} />
 
             <div className="chess__controls">
               <HintButton

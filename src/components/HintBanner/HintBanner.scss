@@ -1,0 +1,51 @@
+.hint-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 2.8em;
+  max-width: 360px;
+  margin: 16px auto 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--warning);
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+
+  &.is-shown {
+    opacity: 1;
+  }
+
+  &__text {
+    flex: 1;
+  }
+
+  &__close {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    transition:
+      color 0.16s ease,
+      background 0.16s ease,
+      border-color 0.16s ease;
+
+    svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    &:hover {
+      color: var(--text);
+      background: var(--surface-2);
+      border-color: var(--border-strong);
+    }
+  }
+}

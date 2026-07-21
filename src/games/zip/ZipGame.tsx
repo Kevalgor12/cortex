@@ -7,6 +7,7 @@ import { readValue, writeValue } from '../../lib/storage';
 
 import { areAdjacent, createZipPuzzle, isSolved, zipHint, type ZipPuzzle } from './zip';
 import Button from '../../components/Button/Button';
+import HintBanner from '../../components/HintBanner/HintBanner';
 import HintButton from '../../components/HintButton/HintButton';
 import { RefreshIcon } from '../../components/icons';
 import PuzzleBar from '../../components/PuzzleBar/PuzzleBar';
@@ -37,7 +38,8 @@ export default function ZipGame({ meta, onExit }: GameProps) {
   const drawingRef = useRef(false);
   const gridRef = useRef<HTMLDivElement>(null);
   const hintUsedRef = useRef(false);
-  const hintTimerRef = useRef<number>();
+  const hintCellRef = useRef<number | null>(null);
+  hintCellRef.current = hintCell;
 
   // Stopwatch - a 1-tick interval is plenty for a m:ss display, and the final
   // time is measured precisely from performance.now on solve.
@@ -47,7 +49,10 @@ export default function ZipGame({ meta, onExit }: GameProps) {
     return () => window.clearInterval(id);
   }, [solved, puzzle]);
 
-  useEffect(() => () => window.clearTimeout(hintTimerRef.current), []);
+  const dismissHint = useCallback(() => {
+    setHintCell(null);
+    setHintMsg('');
+  }, []);
 
   const newGame = useCallback(() => {
     const next = createZipPuzzle(SIZE);
@@ -57,7 +62,6 @@ export default function ZipGame({ meta, onExit }: GameProps) {
     setIsBest(false);
     setElapsed(0);
     startRef.current = performance.now();
-    window.clearTimeout(hintTimerRef.current);
     setHintCell(null);
     setHintMsg('');
     setHintUsed(false);
@@ -70,7 +74,8 @@ export default function ZipGame({ meta, onExit }: GameProps) {
     setPath([puzzle.numbers.indexOf(1)]);
   }, [puzzle]);
 
-  // Reveal the next correct cell, and explain why.
+  // Reveal the next correct cell, and explain why. The hint stays until the path
+  // reaches that cell (see extendTo) or the player dismisses it.
   const useHint = useCallback(() => {
     if (!hint.ready || solvedRef.current) return;
     const suggestion = zipHint(pathRef.current, puzzle);
@@ -81,12 +86,6 @@ export default function ZipGame({ meta, onExit }: GameProps) {
     setHintUsed(true);
     hintUsedRef.current = true;
     hint.use();
-
-    window.clearTimeout(hintTimerRef.current);
-    hintTimerRef.current = window.setTimeout(() => {
-      setHintCell(null);
-      setHintMsg('');
-    }, 3000);
   }, [hint, puzzle]);
 
   const extendTo = useCallback(
@@ -112,6 +111,12 @@ export default function ZipGame({ meta, onExit }: GameProps) {
 
       pathRef.current = next;
       setPath(next);
+
+      // Reaching the suggested cell fulfils the hint - retire it.
+      if (hintCellRef.current !== null && next.includes(hintCellRef.current)) {
+        setHintCell(null);
+        setHintMsg('');
+      }
 
       if (isSolved(next, puzzle)) {
         const time = performance.now() - startRef.current;
@@ -228,7 +233,7 @@ export default function ZipGame({ meta, onExit }: GameProps) {
               })}
             </div>
 
-            <p className={`zip__hint-msg${hintMsg ? ' is-shown' : ''}`}>{hintMsg}</p>
+            <HintBanner message={hintMsg} onDismiss={dismissHint} />
 
             <div className="zip__controls">
               <HintButton

@@ -140,23 +140,6 @@
     }
   }
 
-  &__hint-msg {
-    min-height: 2.8em;
-    max-width: 340px;
-    margin: 16px auto 0;
-    font-size: 0.9rem;
-    font-weight: 600;
-    line-height: 1.35;
-    color: var(--warning);
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-
-    &.is-shown {
-      opacity: 1;
-    }
-  }
-
   &__controls {
     display: flex;
     flex-wrap: wrap;
